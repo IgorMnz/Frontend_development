@@ -45,7 +45,7 @@ function rememberMyFilms() {
             console.log('done');
         } else {
             console.log('error');
-            i--;
+            i--;1
         }
     }
 }
@@ -66,13 +66,21 @@ function detectPersonalLevel() {
 
 detectPersonalLevel();
 
-function showMyDB() {
-    if (personalMovieDB.privat == false) {
+// function showMyDB() {
+//     if (personalMovieDB.privat == false) {
+//         console.log(personalMovieDB);
+//     }
+// };
+
+// showMyDB();
+
+function showMyDB(hidden) {
+    if (!hidden) {
         console.log(personalMovieDB);
     }
 };
 
-showMyDB();
+showMyDB(personalMovieDB.privat);
 
 
 function writeYourGenres() {
@@ -81,5 +89,5 @@ function writeYourGenres() {
         personalMovieDB.genres.push(c);
     }
 };
-1
+
 writeYourGenres();
