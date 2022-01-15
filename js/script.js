@@ -91,3 +91,5 @@ switch (personalMovieDB.count) {
 		default:
 			console.log('Что то пошло не так')
 		};
+
+		
