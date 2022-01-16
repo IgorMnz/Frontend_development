@@ -22,21 +22,21 @@ const movieDB = {
         "Хохлан",
         "Логан",
         "Лига справедливости",
-        "Ла-ла лэнд Пилигрим против всех ололололо",
+        "Ла-ла лэнд",
         "Одержимость",
-        "Скотт Пилигрим против всех ололололо",
-        "Хохлан против против всех ололололо",
+        "Скотт Пилигрим против...",
+        "Хохлан против",
         "Хохлы справедливости"
     ]
-},
-    filmList = document.querySelector('.promo__interactive-list'),
+};
+
+const filmList = document.querySelector('.promo__interactive-list'),
     filmItem = document.querySelectorAll('.promo__interactive-item'),
     promo = document.querySelector('.promo__bg'),
     adv = document.querySelectorAll('.promo__adv img'),
     form_btn = document.querySelector('.promo__interactive .add button'),
     element = document.querySelector('input[type=checkbox]');
 
-    
 adv.forEach(item => {
     item.remove();
 });
@@ -45,39 +45,50 @@ promo.querySelector('.promo__genre').textContent = "Драма";
 
 promo.style.background = "url(img/bg.jpg) top center/cover no-repeat";
 
-refreshMovies()
+
+refreshMovies();
 
 function refreshMovies(){
     filmList.innerHTML = "";
-    movieDB.movies.sort().forEach((film, i) => {
+    movieDB.movies.sort().forEach((film, i) => {        
         filmList.innerHTML += `
             <li class="promo__interactive-item">${i + 1}. ${film}
                 <div class="delete"></div>
             </li>
-        `;
+        `;    
     });
 };
 
 form_btn.addEventListener('click', (e) => {
     e.preventDefault();
+
     let newMovie = document.querySelector('.adding__input').value;
-    if (newMovie != "") {
+
+    if (newMovie) {
+
+        if (newMovie.length > 21) {
+            newMovie = `${newMovie.substring(0, 22)}...`;
+        }
+
         movieDB.movies.push(newMovie);
         filmList.innerHTML = "";
-        refreshMovies();
-        document.querySelector('.adding__input').value = "";
+        refreshMovies();        
+
         if (element.checked) {
             alert('Добавляем любимый фильм');
         };        
     };
+
+    document.querySelector('.adding__input').value = "";
+
 });
 
+document.querySelectorAll('.delete').forEach((del, i) => {
+    del.addEventListener('click', () => {
+        del.parentElement.remove();
+        movieDB.movies.splice(i, 1);
 
 
+    });
+});
 
-function stringTruncate(str, length){
-    let dots = str.length > length ? '...' : '';
-    return str.substring(0, length)+dots;
-  };
-
-  console.log(stringTruncate('Скотт Пилигрим против всех ололололо', 21));
