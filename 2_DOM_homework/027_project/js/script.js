@@ -28,7 +28,8 @@ const movieDB = {
 },
     filmList = document.querySelector('.promo__interactive-list'),
     promo = document.querySelector('.promo__bg'),
-    adv = document.querySelectorAll('.promo__adv img');
+    adv = document.querySelectorAll('.promo__adv img'),
+    form_btn = document.querySelector('.promo__interactive .add button');
 
     
 adv.forEach(item => {
@@ -39,7 +40,7 @@ promo.querySelector('.promo__genre').textContent = "Драма";
 
 promo.style.background = "url(img/bg.jpg) top center/cover no-repeat";
 
-filmList.innerHTML = "";   //Нам нужно убедиться, что внутри родителя ничего нет: обратимся к свойству переменной innerHTML и пропишем пустые кавычки. Таким образом мы очистили список перед началом работы
+filmList.innerHTML = "";
 
 movieDB.movies.sort().forEach((film, i) => {
     filmList.innerHTML += `
@@ -48,3 +49,6 @@ movieDB.movies.sort().forEach((film, i) => {
         </li>
     `;
 });
+
+
+
