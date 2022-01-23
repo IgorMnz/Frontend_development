@@ -137,7 +137,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     //Для того чтобы модалка открывалась через определенное время:
-    const modalTimerId = setTimeout(openModal, 5000);
+    // const modalTimerId = setTimeout(openModal, 5000);
 
     //Для того чтобы модалка открывалась Однократно когда юзер заскролил страницу до конца вниз (-1 пиксель в конце для того чтобы скрипт срабатывал без ошибок):
     function showModalByScroll() {
@@ -148,7 +148,6 @@ window.addEventListener('DOMContentLoaded', () => {
     };
 
     window.addEventListener('scroll', showModalByScroll);
-
 
     // const compstyle = window.getComputedStyle(modal);
     // function showModal() {
@@ -172,15 +171,78 @@ window.addEventListener('DOMContentLoaded', () => {
     // showModal();
     // closeModal();
 
+
+    //Menu item
+    class MenuCard {
+        constructor(src, alt, title, descr, price, parentSelector, ...classes) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.descr = descr;
+            this.price = price;
+            this.classes = classes;
+            this.parent = document.querySelector(parentSelector); //То, куда мы будем помещать наш созданный div
+            this.transfer = 27;
+            this.changeToUAH();
+        }
+        //Метод для конвертации доллары в гривны
+        changeToUAH() {
+            this.price = this.price * this.transfer;
+        }
+
+        //Метод для формирования верстки
+        render() {
+            const element = document.createElement('div');
+
+            //Для создания дефолтного значения для rest аргумента ...classes используем условие:
+            if (this.classes.length == 0) {
+                this.element = 'menu__item';
+                element.classList.add(this.element);
+            } else {
+                this.classes.forEach(className => element.classList.add(className));
+            }
+
+            element.innerHTML = `
+                    <img src=${this.src} alt=${this.alt}>
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
+                    <div class="menu__item-descr">${this.descr}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+                    </div>
+                `;
+            this.parent.append(element); //Помещаем новосозданный элемент в родительский DOM-элемент
+        }
+    }
+
+    //Создаем объект(карточку товара) и вызываем метод render(отрисовка HTML структуры)
+    new MenuCard(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        "Меню 'Фитнес'",
+        "Меню 'Фитнес' - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!",
+        9, //так как в базе данных у нас стоит 9 долларов
+        ".menu .container", //создаваемы элемент будет находиться в таком родителе
+    ).render();
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        9, //так как в базе данных у нас стоит 9 долларов
+        ".menu .container", //создаваемы элемент будет находиться в таком родителе
+        'menu__item'
+    ).render();
+
+    new MenuCard(
+        "img/tabs/post.jpg",
+        "post",
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+        9, //так как в базе данных у нас стоит 9 долларов
+        ".menu .container", //создаваемы элемент будет находиться в таком родителе
+        'menu__item'
+    ).render();
 });
-
-
-
-function count(num) {
-    return this * num;
-}
-
-const double = count.bind(2);//в контекст this передается 2
-
-console.log(double(3)); //результат будет 2 * 3 = 6
-console.log(double(13)); //результат будет 2 * 13 = 26
