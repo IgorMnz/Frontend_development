@@ -6,6 +6,7 @@ window.addEventListener('DOMContentLoaded', () => {
         tabsContent = document.querySelectorAll('.tabcontent'),
         tabsParent = document.querySelector('.tabheader__items');
 
+    //Добавляем функцию которая будет добавлять класс hide и удалять класс show для каждой найденной вкладки:
     function hideTabContent() {
         tabsContent.forEach(item => {
             item.classList.add('hide');
@@ -14,8 +15,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
         tabs.forEach(item => {
             item.classList.remove('tabheader__item_active');
-        })
-    };
+        });
+    }
 
     function showTabContent(i = 0) {
         tabsContent[i].classList.add('show', 'fade');
@@ -26,6 +27,7 @@ window.addEventListener('DOMContentLoaded', () => {
     hideTabContent();
     showTabContent(); 
 
+    //Создаем обработчик событий который будет по клику на вкладки запускать наши функиции:
     tabsParent.addEventListener('click', (event) => {
         const target = event.target; //для простоты испльзования
 
@@ -44,6 +46,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
     const deadline = '2022-02-01';
 
+    //Создаем функцию для расчета таймера:
     function getTimeRemaining(endtime) {
         const t = Date.parse(endtime) - Date.parse(new Date()),
               days = Math.floor(t / (1000 * 60 * 60 * 24)),
@@ -69,6 +72,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
+    //Находим на странице наши элементы таймера:
     function setClock(selector, endtime) {
         const timer = document.querySelector(selector),
             days = timer.querySelector('#days'),
@@ -79,6 +83,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
             updateClock(); //Используем чтобы наш таймер запускался сразу как пользователь зашел на страницу
 
+        //Добавляем функцию для обновления нашего таймера
         function updateClock() {
             const t = getTimeRemaining(endtime);
 
@@ -87,6 +92,7 @@ window.addEventListener('DOMContentLoaded', () => {
             minutes.innerHTML = getZero(t.minutes);
             seconds.innerHTML = getZero(t.seconds);
 
+            //Когда таймер дойдет до 0 (кол-во мс заданной даты минус кол-во мс настоящей даты будет равно 0) отключаем таймер:
             if (t.total <= 0) {
                 clearInterval(timeInterval);
             }
@@ -98,8 +104,7 @@ window.addEventListener('DOMContentLoaded', () => {
     //Modal
 
     const modalTrigger = document.querySelectorAll('[data-modal]'),
-          modal = document.querySelector('.modal'),
-          modalCloseBtn = document.querySelector('[data-close]');
+          modal = document.querySelector('.modal');
 
     function openModal() {
         modal.classList.add('show');
@@ -107,7 +112,7 @@ window.addEventListener('DOMContentLoaded', () => {
         // modal.classList.toggle('show');
         document.body.style.overflow = 'hidden'; //Для того чтобы при открытии модалки невозможно было взаимодействовать с другими элементами
         clearInterval(modalTimerId); //Если юзер уже открыл модалку, таймер сброситься
-    };
+    }
 
     modalTrigger.forEach(btn => {
         btn.addEventListener('click', openModal);
@@ -118,13 +123,12 @@ window.addEventListener('DOMContentLoaded', () => {
         modal.classList.remove('show');
         // modal.classList.toggle('show');
         document.body.style.overflow = '';
-    };
+    }
     
-    modalCloseBtn.addEventListener('click', closeModal)
 
-    //Для того чтобы модалка закрывалась при клике на подложку:
+    //Для того чтобы модалка закрывалась при клике на подложку и на элемент с дата атрибутом data-close:
     modal.addEventListener('click', (e) => {
-        if (e.target === modal) {
+        if (e.target === modal || e.target.getAttribute('data-close') == '') {
             closeModal();
         }
     });
@@ -137,7 +141,7 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     //Для того чтобы модалка открывалась через определенное время:
-    // const modalTimerId = setTimeout(openModal, 5000);
+    const modalTimerId = setTimeout(openModal, 50000);
 
     //Для того чтобы модалка открывалась Однократно когда юзер заскролил страницу до конца вниз (-1 пиксель в конце для того чтобы скрипт срабатывал без ошибок):
     function showModalByScroll() {
@@ -145,7 +149,7 @@ window.addEventListener('DOMContentLoaded', () => {
             openModal();
             window.removeEventListener('scroll', showModalByScroll);
         }
-    };
+    }
 
     window.addEventListener('scroll', showModalByScroll);
 
@@ -173,6 +177,8 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     //Menu item
+
+    //Создаем класс конструктор для наших карточек товара, последний аргумент будет rest как дефолтное значение:
     class MenuCard {
         constructor(src, alt, title, descr, price, parentSelector, ...classes) {
             this.src = src;
@@ -183,14 +189,14 @@ window.addEventListener('DOMContentLoaded', () => {
             this.classes = classes;
             this.parent = document.querySelector(parentSelector); //То, куда мы будем помещать наш созданный div
             this.transfer = 27;
-            this.changeToUAH();
+            this.changeToUAH(); //После создания новой карточки у нас выполнится эта функция и в this.price запишется уже сконвертированная валюта
         }
-        //Метод для конвертации доллары в гривны
+        //Метод для конвертации доллары в гривны:
         changeToUAH() {
             this.price = this.price * this.transfer;
         }
 
-        //Метод для формирования верстки
+        //Метод для формирования верстки:
         render() {
             const element = document.createElement('div');
 
@@ -202,6 +208,7 @@ window.addEventListener('DOMContentLoaded', () => {
                 this.classes.forEach(className => element.classList.add(className));
             }
 
+            //Создаем структуру HTML и помещаем ее в element:
             element.innerHTML = `
                     <img src=${this.src} alt=${this.alt}>
                     <h3 class="menu__item-subtitle">${this.title}</h3>
@@ -216,7 +223,7 @@ window.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    //Создаем объект(карточку товара) и вызываем метод render(отрисовка HTML структуры)
+    //Создаем объекты(карточки товара) и вызываем метод render(отрисовка HTML структуры):
     new MenuCard(
         "img/tabs/vegy.jpg",
         "vegy",
@@ -231,7 +238,7 @@ window.addEventListener('DOMContentLoaded', () => {
         "elite",
         'Меню “Премиум”',
         'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
-        9, //так как в базе данных у нас стоит 9 долларов
+        12, //так как в базе данных у нас стоит 9 долларов
         ".menu .container", //создаваемы элемент будет находиться в таком родителе
         'menu__item'
     ).render();
@@ -241,8 +248,111 @@ window.addEventListener('DOMContentLoaded', () => {
         "post",
         'Меню "Постное"',
         'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
-        9, //так как в базе данных у нас стоит 9 долларов
+        10, //так как в базе данных у нас стоит 9 долларов
         ".menu .container", //создаваемы элемент будет находиться в таком родителе
         'menu__item'
     ).render();
+
+    //Forms
+
+    const forms = document.querySelectorAll('form');
+
+    //Создаем объект - хранилище сообщений которое мы хотим показать пользователю
+    const message = {
+        loading: 'img/form/spinner.svg',
+        success: 'Спасибо! Скоро мы с вами свяжемся',
+        failure: 'Что-то пошло не так...'
+    };
+
+    //Подвязываем функию postData ко всем формам на сайте:
+    forms.forEach(item => {
+        postData(item);
+    });
+
+    function postData(form) {
+        form.addEventListener('submit', (e) => {
+            e.preventDefault();
+
+            //Создаем картинку спиннер которая будет показываться при загрузке отправки формы на серв:
+            let statusMessage = document.createElement('img');
+            //Устанавливаем атрибут src для нашего img и ссылаемся на свойство объекта message:
+            statusMessage.src = message.loading;
+            //Применяем inline стили для нашего спиннера:
+            statusMessage.style.cssText = `
+                display: block;
+                margin: 0 auto;
+            `;
+            // form.appendChild(statusMessage); // отправляем на нашу html страницу в форму cообщение
+
+            //Для того чтобы спиннер добавлялся после ниже формы используем метод insertAdjacentElement и в аргументах используем (куда вставляем, что вставялем):
+            form.insertAdjacentElement('afterend', statusMessage);
+        
+            //Создаем запрос на сервер:
+            const request = new XMLHttpRequest();
+            request.open('POST', 'server.php');
+
+            //Используем Http заголовок для отправки JSON:
+            request.setRequestHeader('Content-type', 'application/json; charset=utf-8');
+            const formData = new FormData(form);//очень важно чтобы в верстке в input'ах был атрибут name= FormData не сможет найти этот input
+
+            //Прием для преобразования FormData в JSON:
+            const object = {};
+            formData.forEach(function(value, key){
+                object[key] = value;
+            });
+
+            //Конвертация объекта в JSON который превращает обычный объект в объект JSON:
+            const json = JSON.stringify(object);
+
+            request.send(json);
+
+            request.addEventListener('load', () => {
+                if (request.status === 200) {
+                    console.log(request.response);
+                    
+                    //Если у нас данные на серв загрузились и ответ вернулся с кодом 200 (Ок) создаем успешное сообщение:
+                    showThanksModal (message.success);
+                    
+                    //очистка value в input'ах формы:
+                    form.reset();
+                    
+                    //Удаляем спиннер который есть на странице:
+                    statusMessage.remove();
+                } else {
+                    //Если ошибка то показываем сообщение об ошибке:
+                    showThanksModal (message.failure);
+                }
+            });
+        });
+    }
+
+    //Создаем функцию показа сообщения при успешной отправки формы на сервер:
+    function showThanksModal(message) {
+        const prevModalDialog = document.querySelector('.modal__dialog');
+
+        //Скрываем в модальном окне прошлый контент с инпутами и кнопкой:
+        prevModalDialog.classList.add('hide');
+        openModal();
+
+        const thanksModal = document.createElement('div');
+        thanksModal.classList.add('modal__dialog');
+        thanksModal.innerHTML = `
+            <div class="modal__content">
+                <div class="modal__close" data-close>&times;</div>
+                <div class="modal__title">${message}</div>
+            </div>
+            `;
+
+        //Добавляем наш созданный элемент в html в родителя .modal:
+        document.querySelector('.modal').append(thanksModal);
+
+        //Чтобы модальное окно вернулась в исходный вид спустя 4 сек:
+        setTimeout(() => {
+            thanksModal.remove();
+            prevModalDialog.classList.add('show');
+            prevModalDialog.classList.remove('hide');
+            closeModal();
+        }, 2000);
+    }
 });
+
