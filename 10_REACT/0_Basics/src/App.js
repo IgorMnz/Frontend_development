@@ -50,6 +50,44 @@ function Btn() {
 } //в вызове можем использовать либо переменную, либо вызвать функцию, либо элемент, либо какое либо выражение
 
 
+// //Разбираем props функционального компонента:
+// function WhoAmI ({name, surname, link}) {
+// 	return (
+// 		<div>
+// 			<h1>My name is {name()}, surname - {surname}</h1>
+// 			<a href={link}>My profile</a>
+// 		</div>
+// 	)
+// }
+
+//Переделываем WhoAmI в классовый компонент (чтобы передать props используем конструктор). Чтобы сделать событие передаем название метода который прописываем здесь же в классе(только через стрелочную функцию):
+class WhoAmI extends Component {
+	constructor(props) {
+		super(props);
+		this.state = {
+			years: 27,
+			text: '+++'
+		}
+	}
+
+	nextYear = () => {
+		this.setState(state => ({
+			years: state.years + 1
+		}))
+	}
+
+	render() {
+		const {name, surname, link} = this.props;
+		return (
+			<div>
+				<button onClick={this.nextYear}>{this.state.text}</button>
+				<h1>My name is {name}, surname - {surname}, age - {this.state.years}</h1>
+				<a href={link}>My profile</a>
+			</div>
+		)
+	}
+}
+
 //Основной функциональный Компонент App:
 function App() {
   return (
@@ -59,6 +97,8 @@ function App() {
 	  </StrictMode>
       <Field/>
       <Btn/>
+	  <WhoAmI name='John' surname="Smith" link="facebook.com"/>
+	  <WhoAmI name='Alex' surname="Shepard" link="vk.com"/>
     </div>
   );
 }
