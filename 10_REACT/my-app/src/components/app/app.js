@@ -17,7 +17,8 @@ class App extends Component {
                 {name: 'Alex Shepard', salary: 3000, increase: true, rise: false, id: 2},
                 {name: 'Carl Wilson', salary: 500, increase: false, rise: false, id: 3},
             ],
-            term: ''
+            term: '',
+            tabActive: 1
         }
         this.maxId = 4;
     }
@@ -84,8 +85,7 @@ class App extends Component {
     searchEmp = (items, term) => {
         if (term.length === 0) {
             return items;
-        }
-
+        } else 
         return items.filter(item => {
             return item.name.toLowerCase().indexOf(term.toLowerCase()) > -1
         })
@@ -93,6 +93,23 @@ class App extends Component {
 
     onUpdateSearch2 = (term) => {
         this.setState({term: term})
+    }
+
+    changeTab = (tabActive) => {
+            this.setState({tabActive: tabActive});
+
+    }
+
+    filterPost = (items, tabActive) => {
+        if (tabActive === 1) {
+            return items
+        }        
+        if (tabActive === 2) {
+            return items.filter(item => item.rise)
+        }
+        if (tabActive === 3) {
+            return items.filter(item => item.salary >= 1000)
+        }
     }
 
     // onToggleRise = (id) => {
@@ -108,11 +125,11 @@ class App extends Component {
 
     render() {
 
-        //Посчитаем количество сотрудников и сколько получат премию которое берем из стейта массива
-        const {data, term} = this.state
+        //Посчитаем количество сотрудников и сколько получат премию которое берем из стейта массива. В visibleData мы передаем функцию filterPost у которой первым аргументом(items) как массив будет функция поиска searchEmp
+        const {data, term, tabActive} = this.state
         const employees = this.state.data.length
         const increased = this.state.data.filter(item => item.increase).length
-        const visibleData = this.searchEmp(data, term);
+        const visibleData = this.filterPost(this.searchEmp(data, term), tabActive);
 
         return(
             <div className="app">
@@ -122,7 +139,7 @@ class App extends Component {
     
                 <div className="search-panel">
                     <SearchPanel onUpdateSearch2={this.onUpdateSearch2}/>
-                    <AppFilter/>
+                    <AppFilter changeTab={this.changeTab}/>
                 </div>
     
                 <EmployersList 
