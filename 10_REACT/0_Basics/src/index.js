@@ -2,7 +2,8 @@ import React, {StrictMode} from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
-import {Header} from './App'
+import 'bootstrap/dist/css/bootstrap.min.css';
+import BootstrapTest from './BootstrapTest';
 
 // const elem = <h2 class='greetings'>Hello world!</h2> //Это называется React элемент
 
@@ -23,6 +24,7 @@ ReactDOM.render(
   // elem,
   <StrictMode>
     <App/>
+    <BootstrapTest/>
   </StrictMode>,
   document.getElementById('root')
 );

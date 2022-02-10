@@ -108,7 +108,7 @@ class WhoAmI extends Component {
 //Основной функциональный Компонент App:
 function App() {
   return (
-    <div className="App">
+    <div className='App'>
 	  <StrictMode>
 			<Header/>
 	  </StrictMode>
