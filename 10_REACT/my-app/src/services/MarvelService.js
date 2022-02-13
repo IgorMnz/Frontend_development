@@ -14,6 +14,7 @@ class MarvelService {
         return await res.json();
     }
 
+    //Для того чтобы потом можно было вызывать функцию с необходимым нам оффсетом, мы передаем этот оффсет как аргумент и по умолчанию он будет равным тому, который мы установили выше
     getAllCharacters = async (offset = this._baseOffset) => {
         const res = await this.getResources(`${this._apiBase}characters?limit=9&offset=${offset}&${this._apiKey}`);
         return res.data.results.map(this._transformCharacter);
