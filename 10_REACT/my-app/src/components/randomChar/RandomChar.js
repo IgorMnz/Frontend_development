@@ -29,6 +29,12 @@ class RandomChar extends Component {
         // clearInterval(this.timerId);
     }
 
+    onCharLoading = () => {
+        this.setState({
+            loading: true
+        })
+    }
+
     onCharLoaded = (char) => {
         this.setState({
             char,
@@ -61,9 +67,10 @@ class RandomChar extends Component {
         })
     }
 
+    //Перед запросом у нас состояние loading  переходит в true в методе this.onCharLoading() а потом когда произошла загрузка, в методе this.onCharLoaded состояние переключается в false
     updateChar = () => {
         const id = Math.floor(Math.random() * (1011400 - 1011000) + 1011000)
-        console.log('update')
+        this.onCharLoading()
         this.marvelService
             .getCharacter(id)
             .then(this.onCharLoaded)
@@ -101,8 +108,8 @@ class RandomChar extends Component {
                     <p className="randomchar__title">
                         Or choose another one
                     </p>
-                    <button className="button button__main">
-                        <div className="inner" onClick={this.updateChar}>try it</div>
+                    <button onClick={this.updateChar} className="button button__main">
+                        <div className="inner">try it</div>
                     </button>
                     <img src={mjolnir} alt="mjolnir" className="randomchar__decoration"/>
                 </div>
@@ -115,12 +122,13 @@ const View = ({char}) => {
 
     const {name, description, thumbnail, homepage, wiki} = char;
 
-    const active = thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
-    const clazz = active ? "randomchar__img__notfound" : "randomchar__img";
+    //Проверяем если с сервера приходит изображение заглушка то мы изменяем класс у картинки
+    const notImg = thumbnail === "http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg";
+    const imgClass = notImg ? "randomchar__img__notfound" : "randomchar__img";
 
     return (
         <div className="randomchar__block">
-            <img src={thumbnail} alt="Random character" className={clazz}/>
+            <img src={thumbnail} alt="Random character" className={imgClass}/>
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">
@@ -140,4 +148,3 @@ const View = ({char}) => {
 }
 
 export default RandomChar
-
