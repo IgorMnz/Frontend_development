@@ -1,4 +1,4 @@
-import { Component } from 'react/cjs/react.production.min';
+import { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 
 import MarvelService from '../../services/MarvelService';
@@ -8,125 +8,105 @@ import Skeleton from '../skeleton/Skeleton'
 
 import './charInfo.scss';
 
-class CharInfo extends Component {
+const CharInfo = (props) => {
 
     //Изначально loading у нас в false так как когда мы первый раз загрузили страницу мы еще не выбирали элемент и вместо этого у нас там где описание персонажа будет стоять skeleton Так же и char у нас должен быть сперва null
-    state = {
-        char: null,
-        loading: false,
-        error: false
+    const [char, setChar] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
+
+    const marvelService = new MarvelService();
+
+    // //В этом хуке мы сравниваем если у нас идет переключение id в стейте (то есть новый id из пропсов не равен предыдущему id из пропсов) тогда мы запускаем обновление и рендер из метода updateChar
+    useEffect(() => {
+        updateChar()
+    }, [props.charId])
+
+    const onError = () => {
+        setLoading(false)
+        setError(true)
     }
-
-    marvelService = new MarvelService();
-
-    componentDidMount() {
-        this.updateChar()
-    }
-
-    //В этом хуке мы сравниваем если у нас идет переключение id в стейте (то есть новый id из пропсов не равен предыдущему id из пропсов) тогда мы запускаем обновление и рендер из метода updateChar
-    componentDidUpdate(prevProps) {
-        if (this.props.charId !== prevProps.charId) {
-            this.updateChar()
-        }
-    }
-
-
-
+    
     //Создаем метод обновления персонажа в котром вытаскиваем из пропсов charId который пришел к нам из App. И если id не приходит то есть состояние selectedChar в App = null тогда нам ничего не возвращается
-    updateChar = () => {
-        const {charId} = this.props
+    const updateChar = () => {
+        const {charId} = props
         if (!charId) {
             return;
         }
-        this.onCharLoading()
-        this.marvelService
+        onCharLoading()
+        marvelService
             .getCharacter(charId)
-            .then(this.onCharLoaded)
-            .catch(this.onError)
+            .then(onCharLoaded)
+            .catch(onError)
     }
 
-    onCharLoading = () => {
-        this.setState({
-            loading: true
-        })
+    const onCharLoading = () => {
+        setLoading(true)
     }
 
-    onCharLoaded = (char) => {
-        this.setState({
-            char,
-            loading: false
-        })
+    const onCharLoaded = (char) => {
+        setChar(char)
+        setLoading(false)
     }
 
-    onError = () => {
-        this.setState({
-            loading: false,
-            error: true
-        })
-    }
+    const skeleton =  char || loading || error ? null : <Skeleton/>
+    const errorMessage = error ? <ErrorMessage/> : null;
+    const spinner = loading ? <Spinner/> : null;
+    const content = !(loading || error || !char) ? <View char={char}/> : null
 
-    render() {
-
-        const {char, loading, error} = this.state
-
-        const skeleton =  char || loading || error ? null : <Skeleton/>
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading ? <Spinner/> : null;
-        const content = !(loading || error || !char) ? <View char={char}/> : null
-
-        return (
-            <div className="char__info">
-                {skeleton}
-                {errorMessage}
-                {spinner}
-                {content}
-            </div>
-        )
-    }
+    return (
+        <div className="char__info">
+            {skeleton}
+            {errorMessage}
+            {spinner}
+            {content}
+        </div>
+    )
 }
+
 // Сперва мы вытаскиваем данные из объекта char который нам пришел по тому id который был получен когда мы нажали на элемент
 const View = ({char}) => {
-    const {name, description, thumbnail, homepage, wiki, comics} = char;
+const {name, description, thumbnail, homepage, wiki, comics} = char;
 
-    let imgStyle = {'objectFit' : 'cover'};
-    if (char.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
-        imgStyle = {'objectFit' : 'unset'};
-    }
-   
-    //В ul мы сперва рендерим объект в котором сперва проверяем если кол-во подгружаемых комиксов = 0 тогда он равняется null и не отрендеривается и переходит к рендеру следующего объекта в котором перебираем массив и строим список комиксов
-    return (
-        <>
-        <div className="char__basics">
-            <img src={thumbnail} alt={name} style={imgStyle}/>
-                <div>
-                    <div className="char__info-name">{name}</div>
-                    <div className="char__btns">
-                        <a href={homepage} className="button button__main">
-                            <div className="inner">homepage</div>
-                        </a>
-                        <a href={wiki} className="button button__secondary">
-                            <div className="inner">Wiki</div>
-                        </a>
-                    </div>
+let imgStyle = {'objectFit' : 'cover'};
+if (char.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
+    imgStyle = {'objectFit' : 'unset'};
+}
+
+//В ul мы сперва рендерим объект в котором сперва проверяем если кол-во подгружаемых комиксов = 0 тогда он равняется null и не отрендеривается и переходит к рендеру следующего объекта в котором перебираем массив и строим список комиксов
+return (
+    <>
+    <div className="char__basics">
+        <img src={thumbnail} alt={name} style={imgStyle}/>
+            <div>
+                <div className="char__info-name">{name}</div>
+                <div className="char__btns">
+                    <a href={homepage} className="button button__main">
+                        <div className="inner">homepage</div>
+                    </a>
+                    <a href={wiki} className="button button__secondary">
+                        <div className="inner">Wiki</div>
+                    </a>
                 </div>
             </div>
-            <div className="char__descr">
-                {description}
-            </div>
-            <div className="char__comics">Comics:</div>
-            <ul className="char__comics-list">
-                {comics.length > 0 ? null : 'There is no comics for this character...'}
-                {
-                    comics.map((item, i) => {
-                        return (
-                            <li key={i} className="char__comics-item">
-                                {item.name}
-                            </li>
-                        )
-                    })
-                }
-            </ul>
-        </>
+        </div>
+        <div className="char__descr">
+            {description}
+        </div>
+        <div className="char__comics">Comics:</div>
+        <ul className="char__comics-list">
+            {comics.length > 0 ? null : 'There is no comics for this character...'}
+            {
+                comics.map((item, i) => {
+                    return (
+                        <li key={i} className="char__comics-item">
+                            {item.name}
+                        </li>
+                    )
+                })
+            }
+        </ul>
+    </>
     )
 }
 
