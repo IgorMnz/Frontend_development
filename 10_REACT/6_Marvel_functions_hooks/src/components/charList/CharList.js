@@ -3,34 +3,40 @@ import propTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
-import useMarvelService from '../../services/MarvelService'
+import MarvelService from '../../services/MarvelService'
 
 import './charList.scss';
 
 const CharList = (props) => {
 
     const [charList, setCharList] = useState([])
+    const [loading, setLoading] = useState(true)
+    const [error, setError] = useState(false)
     const [newItemLoading, setNewItemLoading] = useState(false)
     const [offset, setOffset] = useState(210)
     const [charEnded, setCharEnded] = useState(false)
-    //Достаем из кастомного хука useMarvelService свойства и методы:
-    const {loading, error, getAllCharacters} = useMarvelService();
+
+    const marvelService = new MarvelService();
 
     //Когда у нас компонент отрендерился мы запускаем метод запроса на сервер (без аргумента, это значит у нас подставляется дефолтное значение оффсета) и подгружаем перонажей
     //useEffect запускается уже после рендера, поэтому мы вызываем ее еще до того, как прописали ее как стрелочную функцию
 
     useEffect(() => {
-        onRequest(offset, true)
+        onRequest()
     }, [])
 
     //Создаем метод запроса на сервер и подгружаем персонажей с тем отступом, который мы зададим
-    const onRequest = (offset, initial) => {
-
-        //Если мы в onRequest вторым аргументов передадим initial: true то мы говорим коду что это первичная загрузка. Но если идет повторная загрузка то initial: false и 
-        initial ? setNewItemLoading(false) : setNewItemLoading(true)
-
-        getAllCharacters(offset)
+    const onRequest = (offset) => {
+        onCharListLoading()
+        marvelService
+            .getAllCharacters(offset)
             .then(onCharListLoaded)
+            .catch(onError)
+    }
+
+    //Этот метод переключает наш стейт загрузки новых данных newItemLoading в true 
+    const onCharListLoading = () => {
+        setNewItemLoading(true)
     }
 
     //Когда у нас страница загружается первый раз и этот метод запускается впервые, у нас в ...charList пустой массив поэтому он ни во что не развернеться только ...newCharList. В последующем у нас в ...charList будут старые элементы а в ...newCharList новые элементы которые будут складываться в один массив и далее этот метод пойдет в формирование верстки
@@ -45,9 +51,15 @@ const CharList = (props) => {
         //у нас новый стейт charList будет зависеть от предудщего charList и для того чтобы отрендерить новых персонажей мы в массив charList через spread оператор складываем сперва массив предыдущих персонажей и массив новых персонажей. Так же увеличиваем наш оффсет на 9 при каждом новом запросе на сервер
 
         setCharList(charList => [...charList, ...newCharList])
+        setLoading(loading => false)
         setNewItemLoading(newItemLoading => false)
         setOffset(offset => offset + 9)
         setCharEnded(charEnded => ended)
+    }
+
+    const onError = () => {
+        setError(true)
+        setLoading(loading => false)
     }
 
     function renderCharList (arr) {
@@ -93,15 +105,15 @@ const CharList = (props) => {
 
         const items = renderCharList(charList)
 
-        //В spinner мы проверяем если у нас есть загрузка и это НЕ загрузка новых персонажей, то есть мы показываем спинер ТОЛЬКО при изначальной загрузке персонажей
         const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading && !newItemLoading ? <Spinner/> : null;
+        const spinner = loading ? <Spinner/> : null;
+        const content = !(loading || error) ? items : null
         
         return (
             <div className="char__list">
                 {errorMessage}
                 {spinner}
-                {items}
+                {content}
                 <button 
                     className="button button__main button__long"
                     disabled={newItemLoading}

@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import propTypes from 'prop-types';
 
-import useMarvelService from '../../services/MarvelService';
+import MarvelService from '../../services/MarvelService';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton'
@@ -12,14 +12,20 @@ const CharInfo = (props) => {
 
     //Изначально loading у нас в false так как когда мы первый раз загрузили страницу мы еще не выбирали элемент и вместо этого у нас там где описание персонажа будет стоять skeleton Так же и char у нас должен быть сперва null
     const [char, setChar] = useState(null)
+    const [loading, setLoading] = useState(false)
+    const [error, setError] = useState(false)
 
-    const {loading, error, getCharacter, clearError} = useMarvelService();
+    const marvelService = new MarvelService();
 
     // //В этом хуке мы сравниваем если у нас идет переключение id в стейте (то есть новый id из пропсов не равен предыдущему id из пропсов) тогда мы запускаем обновление и рендер из метода updateChar
     useEffect(() => {
         updateChar()
     }, [props.charId])
 
+    const onError = () => {
+        setLoading(false)
+        setError(true)
+    }
     
     //Создаем метод обновления персонажа в котром вытаскиваем из пропсов charId который пришел к нам из App. И если id не приходит то есть состояние selectedChar в App = null тогда нам ничего не возвращается
     const updateChar = () => {
@@ -27,13 +33,20 @@ const CharInfo = (props) => {
         if (!charId) {
             return;
         }
-        clearError()
-        getCharacter(charId)
+        onCharLoading()
+        marvelService
+            .getCharacter(charId)
             .then(onCharLoaded)
+            .catch(onError)
+    }
+
+    const onCharLoading = () => {
+        setLoading(true)
     }
 
     const onCharLoaded = (char) => {
         setChar(char)
+        setLoading(false)
     }
 
     const skeleton =  char || loading || error ? null : <Skeleton/>
