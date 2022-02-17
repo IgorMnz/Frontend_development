@@ -11,6 +11,11 @@ const useMarvelService = () => {
     const _apiKey ='apikey=be23d48578ce8a8865c373b78faaa289';
     const _baseOffset = 210;
 
+    const getAllComics = async (offset = _baseOffset) => {
+        const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`);
+        return res.data.results.map(_transformComics);
+    } 
+
     //Для того чтобы потом можно было вызывать функцию с необходимым нам оффсетом, мы передаем этот оффсет как аргумент и по умолчанию он будет равным тому, который мы установили выше
     const getAllCharacters = async (offset = _baseOffset) => {
         const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
@@ -22,7 +27,17 @@ const useMarvelService = () => {
         return _transformCharacter(res.data.results[0]);
     }
 
-    //Если у нас нету описания то возвращается текст что нету описания, а так же ограничение в 200 символов
+    const _transformComics = (comics) => {
+        return {
+            id: comics.id,
+            title: comics.title,
+            thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
+            price: comics.prices[0].price !== 0 ? comics.prices[0].price + '$' : 'NOT AVAILABLE',
+            homepage: comics.urls[0].url
+        }
+    }
+
+    //Если у нас нету описания то возвращается текст что нету описания, а так же ограничение поставили в 200 символов
     const _transformCharacter = (char) => {
         return {
             id: char.id,
@@ -36,7 +51,7 @@ const useMarvelService = () => {
     }
 
     //Так как useMarvelService тоже наш кастомный хук, мы из него возвращаем свойства и методы
-    return {loading, error, getAllCharacters, getCharacter, clearError}
+    return {loading, error, getAllComics, getAllCharacters, getCharacter, clearError}
 
 }
 
