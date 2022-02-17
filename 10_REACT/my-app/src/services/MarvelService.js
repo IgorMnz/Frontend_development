@@ -16,6 +16,11 @@ const useMarvelService = () => {
         return res.data.results.map(_transformComics);
     } 
 
+    const getComic = async (id) => {
+        const res = await request(`${_apiBase}comics/${id}?${_apiKey}`);
+        return _transformComics(res.data.results[0]);
+    }
+
     //Для того чтобы потом можно было вызывать функцию с необходимым нам оффсетом, мы передаем этот оффсет как аргумент и по умолчанию он будет равным тому, который мы установили выше
     const getAllCharacters = async (offset = _baseOffset) => {
         const res = await request(`${_apiBase}characters?limit=9&offset=${offset}&${_apiKey}`);
@@ -31,8 +36,11 @@ const useMarvelService = () => {
         return {
             id: comics.id,
             title: comics.title,
+            description: comics.description || 'There is no description',
+            pageCount: comics.pageCount ? `${comics.pageCount} p.` : 'No information about the number of pages',
             thumbnail: comics.thumbnail.path + '.' + comics.thumbnail.extension,
-            price: comics.prices[0].price !== 0 ? comics.prices[0].price + '$' : 'NOT AVAILABLE',
+            language: comics.textObjects.language || 'en-us',
+            price: comics.prices[0].price ? comics.prices[0].price + '$' : 'NOT AVAILABLE',
             homepage: comics.urls[0].url
         }
     }
@@ -51,7 +59,7 @@ const useMarvelService = () => {
     }
 
     //Так как useMarvelService тоже наш кастомный хук, мы из него возвращаем свойства и методы
-    return {loading, error, getAllComics, getAllCharacters, getCharacter, clearError}
+    return {loading, error, getAllComics, getComic, getAllCharacters, getCharacter, clearError}
 
 }
 
