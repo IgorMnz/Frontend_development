@@ -13,9 +13,16 @@ class App extends Component {
         super(props);
         this.state = {
             data: [
-                {name: 'John Smith', salary: 800, increase: false, rise: true, id: 1},
-                {name: 'Alex Shepard', salary: 3000, increase: true, rise: false, id: 2},
-                {name: 'Carl Wilson', salary: 500, increase: false, rise: false, id: 3},
+                {name: 'Leanne Graham', salary: 800, increase: false, rise: true, id: 1},
+                {name: 'Ervin Howell', salary: 3000, increase: true, rise: false, id: 2},
+                {name: 'Clementine Bauch', salary: 500, increase: false, rise: false, id: 3},
+                {name: 'Patricia Lebsack', salary: 1000, increase: false, rise: true, id: 4},
+                {name: 'Chelsey Dietrich', salary: 2900, increase: true, rise: false, id: 5},
+                {name: 'Dennis Schulist', salary: 999, increase: false, rise: false, id: 6},
+                {name: 'Kurtis Weissnat', salary: 4560, increase: false, rise: true, id: 7},
+                {name: 'Nicholas Runolfsdottir', salary: 10000, increase: true, rise: false, id: 8},
+                {name: 'Glenna Reichert', salary: 2385, increase: false, rise: false, id: 9},
+                {name: 'Clementine DuBuque', salary: 200, increase: false, rise: false, id: 10},
             ],
             term: '',
             tabActive: 1
