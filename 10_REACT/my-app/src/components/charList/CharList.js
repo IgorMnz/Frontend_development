@@ -26,7 +26,7 @@ const CharList = (props) => {
     //Создаем метод запроса на сервер и подгружаем персонажей с тем отступом, который мы зададим
     const onRequest = (offset, initial) => {
 
-        //Если мы в onRequest вторым аргументов передадим initial: true то мы говорим коду что это первичная загрузка. Но если идет повторная загрузка то initial: false и 
+        //Если мы в onRequest вторым аргументов передадим initial: true то мы говорим коду что это первичная загрузка. Но если идет повторная загрузка то initial: false и setNewItemLoading переходит в true
         initial ? setNewItemLoading(false) : setNewItemLoading(true)
 
         getAllCharacters(offset)
@@ -96,7 +96,8 @@ const CharList = (props) => {
         //В spinner мы проверяем если у нас есть загрузка и это НЕ загрузка новых персонажей, то есть мы показываем спинер ТОЛЬКО при изначальной загрузке персонажей
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading && !newItemLoading ? <Spinner/> : null;
-        
+
+       
         return (
             <div className="char__list">
                 {errorMessage}

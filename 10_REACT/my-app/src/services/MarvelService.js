@@ -12,7 +12,7 @@ const useMarvelService = () => {
     const _baseOffset = 210;
 
     const getAllComics = async (offset = _baseOffset) => {
-        const res = await request(`${_apiBase}comics?limit=8&offset=${offset}&${_apiKey}`);
+        const res = await request(`${_apiBase}comics?limit=12&offset=${offset}&${_apiKey}`);
         return res.data.results.map(_transformComics);
     } 
 

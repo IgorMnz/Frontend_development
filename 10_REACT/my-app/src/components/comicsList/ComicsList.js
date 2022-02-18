@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
 
 import Spinner from '../spinner/Spinner';
@@ -23,6 +23,13 @@ const ComicsList = (props) => {
         onRequest(offset, true)
     }, [])
 
+    useEffect(() => {
+        window.addEventListener('scroll', scrollHandler)
+        return function() {
+            window.removeEventListener('scroll', scrollHandler)
+        }      
+    })
+
     //Создаем метод запроса на сервер и подгружаем персонажей с тем отступом, который мы зададим
     const onRequest = (offset, initial) => {
 
@@ -46,9 +53,10 @@ const ComicsList = (props) => {
 
         setComicsList(comicsList => [...comicsList, ...newComicsList])
         setNewItemLoading(newItemLoading => false)
-        setOffset(offset => offset + 8)
+        setOffset(offset => offset + 12)
         setComicsEnded(comicsEnded => ended)
     }
+
 
 
     function renderComicsList (arr) {
@@ -93,7 +101,17 @@ const ComicsList = (props) => {
     //В spinner мы проверяем если у нас есть загрузка и это НЕ загрузка новых персонажей, то есть мы показываем спинер ТОЛЬКО при изначальной загрузке персонажей
     const errorMessage = error ? <ErrorMessage/> : null;
     const spinner = loading && !newItemLoading ? <Spinner/> : null;
-    
+
+    const scrollHandler = (e) => {
+    if (e.target.documentElement.scrollHeight - (e.target.documentElement.scrollTop + window.innerHeight) < 1) {
+        onRequest(offset)
+        console.log(offset)
+    }
+    // console.log('scrollHeight', e.target.documentElement.scrollHeight)
+    // console.log('scrollHeight', e.target.documentElement.scrollTop)
+    // console.log('scrollHeight', window.innerHeight)
+    }
+
     return (
         <div className="comics__list">
             {errorMessage}
