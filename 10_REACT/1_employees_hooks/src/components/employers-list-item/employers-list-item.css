@@ -62,6 +62,10 @@
 .list-group-item.increase .list-group-item-label, .list-group-item.increase .list-group-item-input {
     color: #e09f3e;
 }
+
+/* .list-group-item.like .list-group-item-label, .list-group-item.increase {
+    color: #1cdd36;
+} */
   
 .list-group-item.increase .btn-star {
     color: #aeaeae;

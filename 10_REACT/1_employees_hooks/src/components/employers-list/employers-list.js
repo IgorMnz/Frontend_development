@@ -2,7 +2,7 @@ import EmployersListItem from "../employers-list-item/employers-list-item"
 import './employers-list.css'
 
 
-const EmployersList = ({data, onDelete, onToggleProp}) => {
+const EmployersList = ({data, dataLength, onDelete, onToggleProp}) => {
 
     const elements = data.map(item => {
         //Деструктуризация по остаточному принипу, то есть мы вытаскиваем только значение пропса id а все остальные пропсы объединяем в itemProps
@@ -17,11 +17,17 @@ const EmployersList = ({data, onDelete, onToggleProp}) => {
         )
     })
 
-    return (
-        <ul className="app-list list-group">
-            {elements}
-        </ul>
-    )
+    if (dataLength !== 0) {
+        return (
+                <ul className="app-list list-group">
+                    {elements}
+                </ul>
+        )
+    } else {
+        return (
+            <div className="not-found">Сотрудники не найдены</div>
+        )
+    }
 }
 
 export default EmployersList;

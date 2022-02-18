@@ -8,7 +8,7 @@ import EmployersAddForm from '../employers-add-form/employers-add-form';
 
 import './app.css';
 
-const App = (props) => {
+const App = () => {
 
     const [data, setData] = useState([
         {name: 'Leanne Graham', salary: 800, increase: false, rise: true, id: 1},
@@ -60,20 +60,19 @@ const App = (props) => {
     }
 
     //Реализуем метод поиска. в Условии проверяем чтобы у нас было хоть что то введено в поле поиска и если что то введено делаем filter по тому массиву который передаем и с помощью метода indexOf пытаемся найти те совпадения которые есть в item.name и введеное в строку поиска term. если возвращается -1 то занчит ничего не найдено и если найдено возвращает массив элементов в которых есть совпадение
-    const searchEmp = (items, term) => {
+    const searchEmp = (items, term) => {        
         if (term.length === 0) {
             return items;
         } else 
         return items.filter(item => {
-            return item.name.toLowerCase().indexOf(term.toLowerCase()) > -1
+            return item.name.toLowerCase().indexOf(term.toLowerCase()) > -1            
         })
+        
     }
 
     const onUpdateSearch2 = (term) => {
         setTerm(term)
     }
-
-
 
     const filterPost = (items, filter) => {
         switch (filter) {
@@ -94,21 +93,27 @@ const App = (props) => {
     const increased = data.filter(item => item.increase).length
     const visibleData = filterPost(searchEmp(data, term), filter);
 
+    const dataLength = visibleData.length
+
     return(
         <div className="app">
             <AppInfo
-            employees = {employees}
-            increased = {increased}/>
+                employees = {employees}
+                increased = {increased}
+            />
 
             <div className="search-panel">
                 <SearchPanel onUpdateSearch2={onUpdateSearch2}/>
                 <AppFilter filter={filter} onFilterSelect={onFilterSelect}/>
             </div>
 
+
             <EmployersList 
-            data={visibleData}
-            onDelete={deleteItem}
-            onToggleProp={onToggleProp}/>
+                dataLength={dataLength}
+                data={visibleData}
+                onDelete={deleteItem}
+                onToggleProp={onToggleProp}
+            />
             <EmployersAddForm onAdd={addItem}/>
         </div>
     );
