@@ -36,6 +36,10 @@ const CharList = (props) => {
     //Когда у нас страница загружается первый раз и этот метод запускается впервые, у нас в ...charList пустой массив поэтому он ни во что не развернеться только ...newCharList. В последующем у нас в ...charList будут старые элементы а в ...newCharList новые элементы которые будут складываться в один массив и далее этот метод пойдет в формирование верстки
     const onCharListLoaded = (newCharList) => {
 
+        // //Используем деструктуризацию для выстаскивания свойств из асинхронной функции, поэтому испольузем await и в onCharListLoaded стивим async (так как не знает через сколько код вернет функцию и мы получаем промис)
+        // const {logger, secondLog} = await import('./someFunc')
+        // logger();
+
         //Проверяем, если у нас возвращается меньше 9 персонажей(последние) тогда присваиваем стейту charEnded значение true посредством переменной ended
         let ended = false;
         if (newCharList.length < 9 ) {
@@ -97,7 +101,12 @@ const CharList = (props) => {
         const errorMessage = error ? <ErrorMessage/> : null;
         const spinner = loading && !newItemLoading ? <Spinner/> : null;
 
-       
+        // if (loading) {
+        //     import('./someFunc')
+        //         .then(obj => obj.default())
+        //         .catch()
+        // }
+
         return (
             <div className="char__list">
                 {errorMessage}
