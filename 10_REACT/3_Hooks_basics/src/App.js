@@ -1,35 +1,34 @@
-import {useRef, useState, useEffect} from 'react';
-import {Container} from 'react-bootstrap';
+import {useState} from 'react';
 import './App.css';
+import Form from './Form';
+import dataContext from './context';
 
-const Form = () => {
-    const [text, setText] = useState('');
+const {Provider} = dataContext;
 
-    const myRef = useRef(1)
-
-    useEffect(() => {
-        myRef.current = text
-    }) 
-
-    return (
-        <Container>
-            <form className="w-50 border mt-5 p-3 m-auto">
-                <div className="mb-3">
-                    <label htmlFor="exampleFormControlInput1" className="form-label">Email address</label>
-                    <input onChange={(e) => setText(e.target.value)} type="email" className="form-control" id="exampleFormControlInput1" placeholder="name@example.com"/>
-                    </div>
-                    <div className="mb-3">
-                    <label htmlFor="exampleFormControlTextarea1" className="form-label">Example textarea</label>
-                    <textarea value={myRef.current} className="form-control" id="exampleFormControlTextarea1" rows="3"></textarea>
-                </div>
-            </form>
-        </Container>
-    )
-}
-
+//Если меняется стейт в App например при помощь кнопки button то все внутри компоненты или элементы начинают перерендерится
 function App() {
+    const [data, setData] = useState({
+        mail: "name@example.com",
+        text: 'some text',
+        forceChangeMail: forceChangeMail
+    });
+
+    function forceChangeMail() {
+        setData({...data, mail: 'test@gmail.com'})
+    }
+
     return (
-        <Form/>
+        <Provider value={data}>
+            <Form text={data.text}/>
+            <button 
+                onClick={() => setData({
+                    mail: "second@example.com",
+                    text: 'another text',
+                    forceChangeMail: forceChangeMail
+                })}>
+                Click me
+            </button>
+        </Provider>
     );
 }
 
