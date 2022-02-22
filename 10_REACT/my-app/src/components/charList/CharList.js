@@ -4,6 +4,7 @@ import propTypes from 'prop-types';
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService'
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 import './charList.scss';
 
@@ -13,6 +14,7 @@ const CharList = (props) => {
     const [newItemLoading, setNewItemLoading] = useState(false)
     const [offset, setOffset] = useState(210)
     const [charEnded, setCharEnded] = useState(false)
+    const [add, setAdd] = useState(false)
     //Достаем из кастомного хука useMarvelService свойства и методы:
     const {loading, error, getAllCharacters} = useMarvelService();
 
@@ -25,6 +27,8 @@ const CharList = (props) => {
 
     //Создаем метод запроса на сервер и подгружаем персонажей с тем отступом, который мы зададим
     const onRequest = (offset, initial) => {
+
+        setAdd(false)
 
         //Если мы в onRequest вторым аргументов передадим initial: true то мы говорим коду что это первичная загрузка. Но если идет повторная загрузка то initial: false и setNewItemLoading переходит в true
         initial ? setNewItemLoading(false) : setNewItemLoading(true)
@@ -52,6 +56,7 @@ const CharList = (props) => {
         setNewItemLoading(newItemLoading => false)
         setOffset(offset => offset + 9)
         setCharEnded(charEnded => ended)
+        setAdd(true)
     }
 
     function renderCharList (arr) {
@@ -70,20 +75,26 @@ const CharList = (props) => {
             //Присваиваем ключ и id для каждого элемента и при клике на элемент li вытаскиваем метод onCharSelected (с аргументом id нужного элемента) из пропсов переданных из app. То есть мы по клику вытаскиваем id того элемента на который мы кликнули и передаем наверх в App и там устанавливаем его в state selectedChar
             
             return (
-                <li 
-                    tabIndex={0}
-                    className="char__item" 
+                <CSSTransition
                     key={item.id}
-                    onClick={() => {
-                        props.onCharSelected(item.id)}}
-                    onKeyPress={(e) => {
-                        if (e.key === ' ' || e.key === "Enter") {
-                            props.onCharSelected(item.id)
-                        }
-                    }}>
+                    in={add} 
+                    timeout={300}
+                    classNames='char__item'>
+                    <li 
+                        tabIndex={0}
+                        className="char__item" 
+                        key={item.id}
+                        onClick={() => {
+                            props.onCharSelected(item.id)}}
+                        onKeyPress={(e) => {
+                            if (e.key === ' ' || e.key === "Enter") {
+                                props.onCharSelected(item.id)
+                            }
+                        }}>
                         <img src={item.thumbnail} alt="abyss" style={imgStyle}/>
                         <div className="char__name">{item.name}</div>
-                </li>
+                    </li>
+                </CSSTransition>
             )
         })
         return (

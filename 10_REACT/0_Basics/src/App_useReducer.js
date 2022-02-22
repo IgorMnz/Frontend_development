@@ -10,6 +10,8 @@ function reducer (state, action) {
             return {autoplay: 300}
         case 'fast':
             return {autoplay: 700}
+        case 'custom':
+            return {autoplay: action.payload}
         default:
             throw new Error()
     }
@@ -50,6 +52,9 @@ const Slider = ({initial}) => {
                     <button 
                         className="btn btn-primary me-2"
                         onClick={() => dispatch({type: 'fast'})}>fast autoplay</button>
+                    <button 
+                        className="btn btn-primary me-2"
+                        onClick={(e) => dispatch({type: 'custom', payload: +e.target.textContent})}>1000</button>
                 </div>
             </div>
         </Container>
