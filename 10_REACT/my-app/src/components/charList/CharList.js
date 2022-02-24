@@ -64,7 +64,7 @@ const CharList = (props) => {
         //Чтобы tabIndex был для каждого элемента свой как счетчик, потом в атрибут помещаем: tabIndex={counter = counter + 1}
         // let counter = 0
 
-        const item = arr.map((item, i) => {
+        const items = arr.map((item, i) => {
 
             //Проверяем если с сервера приходит изображение заглушка то мы в переменную прописываем определенный стиль и потом эту переменную заносив в тег инлайн стилей картинки
             let imgStyle = {'objectFit' : 'cover'};
@@ -99,7 +99,9 @@ const CharList = (props) => {
         })
         return (
             <ul className="char__grid">
-                {item}
+                <TransitionGroup component={null}>
+                    {items}
+                </TransitionGroup>
             </ul>
         )
     }
