@@ -1,5 +1,42 @@
-import { Formik, Form, Field, ErrorMessage } from 'formik';
+import { Formik, Form, Field, ErrorMessage, useField } from 'formik';
 import * as Yup from 'yup'
+
+const MyTextInput = ({label, ...props}) => {
+
+    //первый элемент объект field - пропсы, второй объект meta - мета данные с ошибками и инфой, был ли использован этот метод
+    const [field, meta] = useField(props)
+
+    return (
+        <>
+            <label htmlFor={props.name}>{label}</label>
+            <input {...props} {...field}/>
+            {meta.touched && meta.error ? (
+                <div className='error'>{meta.error}</div>
+            ) : null}
+        </>
+    )
+}
+
+const MyCheckbox = ({children, ...props}) => {
+
+    //первый элемент объект field - пропсы, второй объект meta - мета данные с ошибками и инфой, был ли использован этот метод
+    const [field, meta] = useField({...props, type: 'checkbox'})
+
+    return (
+        <>
+            <label className='checkbox'>
+                <input type="checkbox" {...props} {...field}/>
+                {children}                
+            </label>
+
+
+
+            {meta.touched && meta.error ? (
+                <div className='error'>{meta.error}</div>
+            ) : null}
+        </>
+    )
+}
 
 const CustomForm = () => {
 
@@ -35,22 +72,18 @@ const CustomForm = () => {
         >
             <Form className="form">
                 <h2>Отправить пожертвование</h2>
-                <label htmlFor="name">Ваше имя</label>
-                <Field
+                <MyTextInput
+                    label="Ваше имя"
                     id="name"
                     name="name"
                     type="text"
-                    // style={formik.errors.name && formik.touched.name ? {border: "red solid 1px"} : {border: "lightgrey solid 1px"}}
                 />
-                <ErrorMessage className="error" name="name" component="div"/>
-                <label htmlFor="email">Ваша почта</label>
-                <Field
+                <MyTextInput
+                    label="Ваша почта"
                     id="email"
                     name="email"
                     type="email"
-                    // style={formik.errors.email && formik.touched.email ? {border: "red solid 1px"} : {border: "lightgrey solid 1px"}}
                 />
-                <ErrorMessage className="error" name="email" component="div"/>
                 <label htmlFor="amount">Количество</label>
                 <Field
                     id="amount"
@@ -79,15 +112,9 @@ const CustomForm = () => {
                     as="textarea"
                 />
                 <ErrorMessage className="error" name="text" component="div"/>
-                <label className="checkbox">
-                    <Field 
-                        name="terms" 
-                        type="checkbox" 
-                        // style={formik.errors.terms && formik.touched.terms ? {border: "red solid 1px"} : {border: "lightgrey solid 1px"}}
-                    />
-                    Соглашаетесь с политикой конфиденциальности?
-                </label>
-                <ErrorMessage className="error" name="terms" component="div"/>
+                <MyCheckbox
+                    name="terms">Соглашаетесь с политикой конфиденциальности?
+                </MyCheckbox>
                 <button type="submit">Отправить</button>
             </Form>
         </Formik>
