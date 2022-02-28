@@ -12,7 +12,7 @@ const CharList = (props) => {
 
     const [charList, setCharList] = useState([])
     const [newItemLoading, setNewItemLoading] = useState(false)
-    const [offset, setOffset] = useState(210)
+    const [offset, setOffset] = useState(110)
     const [charEnded, setCharEnded] = useState(false)
     const [add, setAdd] = useState(false)
     //Достаем из кастомного хука useMarvelService свойства и методы:

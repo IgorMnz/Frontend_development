@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { Link } from 'react-router-dom';
 
 import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
@@ -68,7 +69,10 @@ const RandomChar = () => {
 }
 
 const View = ({char}) => {
-    const {name, description, thumbnail, homepage, wiki} = char;
+    const {id, name, description, thumbnail, wiki} = char;
+
+    const shortDescr = `${description.slice(0, 210)}...`
+
     let imgStyle = {'objectFit' : 'cover'};
     if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
         imgStyle = {'objectFit' : 'contain'};
@@ -80,12 +84,14 @@ const View = ({char}) => {
             <div className="randomchar__info">
                 <p className="randomchar__name">{name}</p>
                 <p className="randomchar__descr">
-                    {description}
+                    {shortDescr}
                 </p>
                 <div className="randomchar__btns">
-                    <a href={homepage} className="button button__main">
+                <Link to={`/${id}`} className="button button__main">  
+                    {/* <a href="/" className="button button__main"> */}
                         <div className="inner">homepage</div>
-                    </a>
+                    {/* </a> */}
+                </Link>
                     <a href={wiki} className="button button__secondary">
                         <div className="inner">Wiki</div>
                     </a>

@@ -9,7 +9,7 @@ const useMarvelService = () => {
 
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
     const _apiKey ='apikey=be23d48578ce8a8865c373b78faaa289';
-    const _baseOffset = 210;
+    const _baseOffset = 110;
 
     const getAllComics = async (offset = _baseOffset) => {
         const res = await request(`${_apiBase}comics?limit=12&offset=${offset}&${_apiKey}`);
@@ -50,7 +50,7 @@ const useMarvelService = () => {
         return {
             id: char.id,
             name: char.name,
-            description: char.description ? `${char.description.slice(0, 210)}...` : 'There is no description for this character',
+            description: char.description ? char.description : 'There is no description for this character',
             thumbnail: char.thumbnail.path + '.' + char.thumbnail.extension,
             homepage: char.urls[0].url,
             wiki: char.urls[1].url,

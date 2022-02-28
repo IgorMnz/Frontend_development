@@ -1,0 +1,45 @@
+@import '../../style/variables.scss';
+
+.form {
+    padding: 25px;
+    box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.25);
+    position: relative;
+    z-index: 5;
+    background-color: #fff;
+    &__input {
+        box-shadow: 0px 4px 4px 1px rgba(0, 0, 0, 0.25);
+        border: none;
+        padding-left: 10px;
+        width: 100%;
+        font-size: 16px;
+        line-height: 36px;
+        &:focus {
+            outline: none;
+            background: #fff;
+        }
+    }
+    &__title {
+        font-weight: bold;
+        font-size: 18px;
+        line-height: 24px;
+        margin-bottom: 15px;
+    }
+    &__basics {
+        display: grid;
+        grid-template-columns: 250px auto;
+        column-gap: 25px;
+    }
+    &__btns {
+        a:nth-child(2) {
+            margin-top: 10px;
+            display: none;
+        }
+    }
+}
+
+.error {
+    color: $main-color;
+    font-size: 16px;
+    font-weight: bold;
+    margin-top: 22px;
+}

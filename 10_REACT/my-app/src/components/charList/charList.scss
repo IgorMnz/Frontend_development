@@ -1,23 +1,5 @@
 @import '../../style/variables.scss';
 
-// .char__item-enter {
-//     opacity: 0;
-//     transform: translate(120px, 50%);
-//     visibility: hidden;
-// }
-
-// .char__item-enter-active {
-//     opacity: 1;
-//     visibility: hidden;
-//     transition: all 500ms;
-// }
-
-// .char__item-enter-done {
-//     opacity: 1;
-//     visibility: visible;
-//   }
-
-
 .char {
     &__content {
         margin-top: 50px;

@@ -6,6 +6,7 @@ import Spinner from '../spinner/Spinner';
 import ErrorMessage from '../errorMessage/ErrorMessage';
 import Skeleton from '../skeleton/Skeleton'
 
+
 import './charInfo.scss';
 import { Link } from 'react-router-dom';
 
@@ -54,7 +55,7 @@ const CharInfo = (props) => {
 
 // Сперва мы вытаскиваем данные из объекта char который нам пришел по тому id который был получен когда мы нажали на элемент
 const View = ({char}) => {
-const {name, description, thumbnail, homepage, wiki, comics} = char;
+const {id, name, description, thumbnail, homepage, wiki, comics} = char;
 
 let imgStyle = {'objectFit' : 'cover'};
 if (char.thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
@@ -69,9 +70,11 @@ return (
             <div>
                 <div className="char__info-name">{name}</div>
                 <div className="char__btns">
-                    <a href={homepage} className="button button__main">
+                <Link to={`/${id}`} className="button button__main">    
+                    {/* <a href={homepage} className="button button__main"> */}
                         <div className="inner">homepage</div>
-                    </a>
+                    {/* </a> */}
+                </Link>
                     <a href={wiki} className="button button__secondary">
                         <div className="inner">Wiki</div>
                     </a>
