@@ -32,6 +32,11 @@ const useMarvelService = () => {
         return _transformCharacter(res.data.results[0]);
     }
 
+    const getCharacterByName = async (name) => {
+        const res = await request(`${_apiBase}characters?name=${name}&${_apiKey}`);
+        return res.data.results.map(_transformCharacter);
+    }
+
     const _transformComics = (comics) => {
         return {
             id: comics.id,
@@ -59,7 +64,7 @@ const useMarvelService = () => {
     }
 
     //Так как useMarvelService тоже наш кастомный хук, мы из него возвращаем свойства и методы
-    return {loading, error, getAllComics, getComic, getAllCharacters, getCharacter, clearError}
+    return {loading, error, getAllComics, getComic, getAllCharacters, getCharacter, getCharacterByName, clearError}
 
 }
 

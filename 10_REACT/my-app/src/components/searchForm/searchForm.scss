@@ -19,20 +19,26 @@
         }
     }
     &__title {
+        display: block;
         font-weight: bold;
         font-size: 18px;
         line-height: 24px;
-        margin-bottom: 15px;
+        margin-bottom: 10px;
     }
     &__basics {
         display: grid;
         grid-template-columns: 250px auto;
         column-gap: 25px;
     }
+    &__success {
+        color: green;
+        font-size: 16px;
+        font-weight: bold;
+        margin-top: 22px;
+    }
     &__btns {
-        a:nth-child(2) {
+        a:nth-child(1) {
             margin-top: 10px;
-            display: none;
         }
     }
 }
