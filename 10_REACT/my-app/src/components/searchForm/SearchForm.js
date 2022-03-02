@@ -40,10 +40,6 @@ const SearchForm = () => {
                         The character was not found. Check the name and try again
                     </div>
 
-    console.log()
-
-
-
     return (
         <div className="form">
 

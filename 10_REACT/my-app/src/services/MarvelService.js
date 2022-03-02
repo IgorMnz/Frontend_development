@@ -4,7 +4,7 @@ import { useHttp } from '../hooks/http.hook'
 
 const useMarvelService = () => {
     //Вытаскиваем все что есть в хуке useHttp (деструктурируем объект)
-    const {loading, request, error, clearError} = useHttp();
+    const {request, clearError, process, setProcess} = useHttp();
 
 
     const _apiBase = 'https://gateway.marvel.com:443/v1/public/';
@@ -64,7 +64,14 @@ const useMarvelService = () => {
     }
 
     //Так как useMarvelService тоже наш кастомный хук, мы из него возвращаем свойства и методы
-    return {loading, error, getAllComics, getComic, getAllCharacters, getCharacter, getCharacterByName, clearError}
+    return {process,
+            setProcess, 
+            getAllComics, 
+            getComic, 
+            getAllCharacters, 
+            getCharacter, 
+            getCharacterByName, 
+            clearError}
 
 }
 

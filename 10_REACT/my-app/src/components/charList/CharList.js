@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import propTypes from 'prop-types';
 
 import Spinner from '../spinner/Spinner';
@@ -8,6 +8,25 @@ import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 import './charList.scss';
 
+const setContent = (process, Component, newItemLoading) => {
+    switch (process) {
+        case 'waiting':
+            return <Spinner/>;
+            break;
+        case 'loading':
+            return newItemLoading ? <Component/> : <Spinner/>;
+            break;
+        case 'confirmed':
+            return <Component/>;
+            break;
+        case 'error':
+            return <ErrorMessage/>;
+            break;
+        default:
+            throw new Error('Unexpected process state')
+    }
+}
+
 const CharList = (props) => {
 
     const [charList, setCharList] = useState([])
@@ -16,7 +35,7 @@ const CharList = (props) => {
     const [charEnded, setCharEnded] = useState(false)
     const [add, setAdd] = useState(false)
     //Достаем из кастомного хука useMarvelService свойства и методы:
-    const {loading, error, getAllCharacters} = useMarvelService();
+    const {getAllCharacters, process, setProcess} = useMarvelService();
 
     //Когда у нас компонент отрендерился мы запускаем метод запроса на сервер (без аргумента, это значит у нас подставляется дефолтное значение оффсета) и подгружаем перонажей
     //useEffect запускается уже после рендера, поэтому мы вызываем ее еще до того, как прописали ее как стрелочную функцию
@@ -35,6 +54,7 @@ const CharList = (props) => {
 
         getAllCharacters(offset)
             .then(onCharListLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
     //Когда у нас страница загружается первый раз и этот метод запускается впервые, у нас в ...charList пустой массив поэтому он ни во что не развернеться только ...newCharList. В последующем у нас в ...charList будут старые элементы а в ...newCharList новые элементы которые будут складываться в один массив и далее этот метод пойдет в формирование верстки
@@ -60,6 +80,7 @@ const CharList = (props) => {
     }
 
     function renderCharList (arr) {
+        console.log('render')
 
         //Чтобы tabIndex был для каждого элемента свой как счетчик, потом в атрибут помещаем: tabIndex={counter = counter + 1}
         // let counter = 0
@@ -108,11 +129,9 @@ const CharList = (props) => {
 
     //В кнопке Load more мы изменяем стиль там, что если у нас еще идет дозагрузка персонажей, у нас атрибут disabled становится = true так как стейт newItemLoading = true когда происзодит дозагрузка персов и стиль становится none (кнопка исчезает) когда мы загрузили всех персонажей (charEnded стало = true), в обратном случае у нас кнопка видима. В onClick исп стрелочную ф-ю для того чтбы можно было передавать аргумент
 
-        const items = renderCharList(charList)
-
         //В spinner мы проверяем если у нас есть загрузка и это НЕ загрузка новых персонажей, то есть мы показываем спинер ТОЛЬКО при изначальной загрузке персонажей
-        const errorMessage = error ? <ErrorMessage/> : null;
-        const spinner = loading && !newItemLoading ? <Spinner/> : null;
+        // const errorMessage = error ? <ErrorMessage/> : null;
+        // const spinner = loading && !newItemLoading ? <Spinner/> : null;
 
         // if (loading) {
         //     import('./someFunc')
@@ -120,11 +139,13 @@ const CharList = (props) => {
         //         .catch()
         // }
 
+        const elements = useMemo(() => {
+            return setContent(process, () => renderCharList(charList), newItemLoading)
+        }, [process])
+
         return (
             <div className="char__list">
-                {errorMessage}
-                {spinner}
-                {items}
+                {elements}
                 <button 
                     className="button button__main button__long"
                     disabled={newItemLoading}

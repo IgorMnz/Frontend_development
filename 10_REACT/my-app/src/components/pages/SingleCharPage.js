@@ -1,10 +1,10 @@
 import { useParams, Link } from 'react-router-dom';
 import { useState, useEffect } from 'react';
+import { Helmet } from 'react-helmet';
 
 import useMarvelService from '../../services/MarvelService';
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import AppBanner from '../appBanner/AppBanner';
+import setContent from '../../utils/setContent';
 
 import './singleCharPage.scss';
 
@@ -14,7 +14,7 @@ const SingleCharPage = () => {
     const {charId} = useParams()
     const [char, setChar] = useState(null)
 
-    const {loading, error, getCharacter, clearError} = useMarvelService();
+    const {getCharacter, clearError, process, setProcess} = useMarvelService();
 
     // //В этом хуке мы сравниваем если у нас идет переключение id в стейте (то есть новый id из пропсов не равен предыдущему id из пропсов) тогда мы запускаем обновление и рендер из метода updateChar
     useEffect(() => {
@@ -27,6 +27,7 @@ const SingleCharPage = () => {
         clearError()
         getCharacter(charId)
             .then(onCharLoaded)
+            .then(() => setProcess('confirmed'))
     }
 
 
@@ -34,22 +35,20 @@ const SingleCharPage = () => {
         setChar(char)
     }
 
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    const content = !(loading || error || !char) ? <View char={char}/> : null
+    // const errorMessage = error ? <ErrorMessage/> : null;
+    // const spinner = loading ? <Spinner/> : null;
+    // const content = !(loading || error || !char) ? <View char={char}/> : null
 
     return (
         <>
             <AppBanner/>
-            {errorMessage}
-            {spinner}
-            {content}
+            {setContent(process, View, char)}
         </>
     )
 }
 
-const View = ({char}) => {
-    const {name, description, thumbnail, comics} = char;
+const View = ({data}) => {
+    const {name, description, thumbnail, comics} = data;
 
     let imgStyle = {'objectFit' : 'cover'};
     if (thumbnail === 'http://i.annihil.us/u/prod/marvel/i/mg/b/40/image_not_available.jpg') {
@@ -58,6 +57,13 @@ const View = ({char}) => {
 
     return (
         <div className="single-char">
+            <Helmet>
+                <meta
+                    name="description"
+                    content={`${name} page`}
+                    />
+                <title>{name}</title>
+            </Helmet>
             <img src={thumbnail} alt={name} className="single-char__img" style={imgStyle}/>
             <div className="single-char__info">
                 <h2 className="single-char__name">{name}</h2>

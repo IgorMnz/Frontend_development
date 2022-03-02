@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Helmet } from 'react-helmet';
 
 import RandomChar from '../randomChar/RandomChar';
 import CharList from '../charList/CharList';
@@ -16,10 +17,17 @@ const MainPage = () => {
     const onCharSelected = (id) => {
         setChar(id)
     }
-    
+    console.log('mp')
     //вытаскиваем из CharList нужный id устанавливаем его тут в состоянии в App и передаем это состояние в CharInfo
     return (
         <>
+            <Helmet>
+                <meta
+                    name="description"
+                    content="Marvel information portal"
+                    />
+                <title>Marvel info portal</title>
+            </Helmet>
             <ErrorBoundary>
                 <RandomChar/>
             </ErrorBoundary>

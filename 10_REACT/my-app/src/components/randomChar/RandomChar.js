@@ -1,9 +1,8 @@
 import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import Spinner from '../spinner/Spinner';
-import ErrorMessage from '../errorMessage/ErrorMessage';
 import useMarvelService from '../../services/MarvelService'
+import setContent from '../../utils/setContent';
 
 import mjolnir from '../../resources/img/mjolnir.png';
 import './randomChar.scss';
@@ -12,7 +11,7 @@ const RandomChar = () => {
 
     const [char, setChar] = useState(null);
     //Достаем из кастомного хука useMarvelService свойства и методы:
-    const {loading, error, getCharacter, clearError} = useMarvelService();
+    const {getCharacter, clearError, process, setProcess} = useMarvelService();
 
     useEffect(() => {
         updateChar();
@@ -32,14 +31,16 @@ const RandomChar = () => {
         clearError()
         const id = Math.floor(Math.random() * (1011400 - 1011000)) + 1011000;
         getCharacter(id)
-            .then(onCharLoaded);
+            .then(onCharLoaded)
+            .then(() => setProcess('confirmed'))
+            
     }
 
     //В это переменной будет содержаться либо ничего, либо элемент с ошибкой
-    const errorMessage = error ? <ErrorMessage/> : null;
-    const spinner = loading ? <Spinner/> : null;
-    //Заносим в переменную то, что будет у нас отображаться в зависимости от того в каком состоянии у нас наш контент. Если у нас нету загрузки и нету ошибки то мы возвращаем наш компонент с содежимым
-    const content = !(loading || error || !char) ? <View char={char} /> : null;
+    // const errorMessage = error ? <ErrorMessage/> : null;
+    // const spinner = loading ? <Spinner/> : null;
+    // //Заносим в переменную то, что будет у нас отображаться в зависимости от того в каком состоянии у нас наш контент. Если у нас нету загрузки и нету ошибки то мы возвращаем наш компонент с содежимым
+    // const content = !(loading || error || !char) ? <View char={char} /> : null;
 
     //В методе рендер сперва отрисовывается то где первее стоит return. То есть если у нас загрузка true то будет отрисовываться спиннер (условный рендеринг) Если приходит null то у нас ничего рендериться не будет
     // if (loading) {
@@ -48,9 +49,7 @@ const RandomChar = () => {
         
     return (
         <div className="randomchar">
-            {errorMessage}
-            {spinner}
-            {content}
+            {setContent(process, View, char)}
             <div className="randomchar__static">
                 <p className="randomchar__title">
                     Random character for today!<br/>
@@ -68,8 +67,8 @@ const RandomChar = () => {
     )
 }
 
-const View = ({char}) => {
-    const {id, name, description, thumbnail, wiki} = char;
+const View = ({data}) => {
+    const {id, name, description, thumbnail, wiki} = data;
 
     const shortDescr = `${description.slice(0, 210)}...`
 
