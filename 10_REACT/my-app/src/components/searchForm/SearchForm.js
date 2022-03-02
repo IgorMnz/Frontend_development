@@ -24,6 +24,9 @@ const SearchForm = () => {
     }
 
     // const errorMessage = error ? <div className="error"><ErrorMessage /></div> : null;
+
+    const errorMessage = <ErrorMessage component="div" className="error" name="charName" />
+
     const results = !char ? null : char.length > 0 ?
                     <div className="form__basics">
                         <div className="form__success">There is! Visit {char[0].name} page?</div>
@@ -37,7 +40,9 @@ const SearchForm = () => {
                         The character was not found. Check the name and try again
                     </div>
 
-    console.log(char)
+    console.log()
+
+
 
     return (
         <div className="form">
@@ -54,7 +59,9 @@ const SearchForm = () => {
                     updateChar(charName);
                 }}
             >
+            {props => {
 
+                return (
                 <Form>
                     <label className="form__title" htmlFor="charName">Find a character by name:</label>
                         <div className="form__basics">
@@ -71,10 +78,12 @@ const SearchForm = () => {
                                     <div className="inner">Find</div>
                                 </button>
                         </div>
-                        <ErrorMessage component="div" className="error" name="charName" />
+                        {props.dirty === false ? errorMessage : results}
                 </Form>
+                )
+            }}
             </Formik>
-            {results}
+            
             {/* {errorMessage} */}
         </div>
     )
