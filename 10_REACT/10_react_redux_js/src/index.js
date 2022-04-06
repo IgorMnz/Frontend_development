@@ -2,30 +2,31 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore } from 'redux';
 
-const initialState = {value: 0};
+const initialState = {value: 0}
 
-//Эта функция похожа на useState - вначале принимает в себя состояние state, а затем принимает в себя action действие для изменения этого стейта. По умолчанию state = 0 (если первый аргумент получаем какой нибудь undefined то нам вернется этот изначальный стейт)
-//reducer всегда должна быть чистой функцией - зависеть только от state который в нее приходит и от action, причем она должна возвращать один и тот же результат при одинаковых аргументах и не иметь никаких побочных эффектов (никаких случайных чисел, никаких работ с DOM деревом, никаких выводов в консоль и запросов на сервер) так же reducer должна соблюдать принципы иммутабельности
+//Первый аргумент state - предыдущее значение стейта, action - то что приходит извне store из view. Тут же задаем изначальное состояние state
+//reducer должна быть чистой функцией и соблюдать принцип иммутабельности
+//Так как изначальный стейт это объект, чтобы соблюсти принцип иммутабельности необходимо создать копию объекта через spread оператор(...) и потом прописать какое свойство этого объекта и как оно меняется
 const reducer = (state = initialState, action) => {
-    switch (action.type) {
-        case "INC":
-            return {
-              ...state,
-              value: state.value + 1
-            };
-        case "DEC":
-            return {
-              ...state,
-              value: state.value - 1
-            };
-        case "RND":
-            return {
-              ...state,
-              value: state.value * action.payload
-            };
-        default:
-            return state;
-    }
+  switch (action.type) {
+      case "INC":
+          return {
+            ...state,
+            value: state.value + 1
+          };
+      case "DEC":
+          return {
+            ...state,
+            value: state.value - 1
+          };
+      case "RND":
+          return {
+            ...state,
+            value: state.value * action.payload
+          };
+      default:
+          return state;
+  }
 }
 
 //Создаем Store
@@ -35,10 +36,10 @@ const update = () => {
   document.getElementById('counter').textContent = store.getState().value
 }
 
-//Делаем подписку на наш store и выводим функцию которая будет выполняться при каждом изменении state (store.dispatch)
+//Подписка на изменение стейта, функция будет выполнена каждый раз когда изменяется стейт через dispatch
 store.subscribe(update)
 
-//Создадим action creator
+//Создаем функцию action creator для удобства, которая просто возвращает тип action который мы хотим передать в dispatch
 const inc = () => ({type: 'INC'})
 const dec = () => ({type: 'DEC'})
 const rnd = (value) => ({type: 'RND', payload: value})
@@ -56,11 +57,11 @@ document.getElementById('rnd').addEventListener('click', () => {
   store.dispatch(rnd(value))
 })
 
-// //инициируем создание нашего глобального стейта, первый запуск который мы будем осуществлять
+
 // let state = reducer(initialState, {type: 'INC'})
-//     state = reducer(state, {type: 'INC'})
-//     state = reducer(state, {type: 'INC'})
-//     state = reducer(state, {type: 'INC'})
+// state = reducer(state, {type: 'INC'})
+// state = reducer(state, {type: 'INC'})
+// state = reducer(state, {type: 'INC'})
 // console.log(state)
 
 ReactDOM.render(

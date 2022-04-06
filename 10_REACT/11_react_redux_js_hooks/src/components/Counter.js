@@ -1,19 +1,30 @@
-import {inc, dec, rnd} from '../actions'
-import { useSelector, useDispatch } from "react-redux"
+import { connect } from "react-redux"
+import { bindActionCreators } from "redux"
 
-const Counter = () => {
+//Импортируем все из файла actions.js и помещаем в объект actions:
+import * as actions from '../actions';
 
-    const counter = useSelector(state => state.counter)
-    const dispatch = useDispatch()
-
+const Counter = ({counter, inc, dec, rnd}) => {
     return (
-        <div className="jubotron">
+        <div className="jumbotron">
             <h1>{counter}</h1>
-            <button onClick={() => dispatch(inc())} className="btn btn-primary">INC</button>
-            <button onClick={() => dispatch(dec())} className="btn btn-primary">DEC</button>
-            <button onClick={() => dispatch(rnd())} className="btn btn-primary">RND</button>
-      </div>
+            <button onClick={dec} className="btn btn-primary">DEC</button>
+            <button onClick={inc} className="btn btn-primary">INC</button>
+            <button onClick={rnd} className="btn btn-primary">RND</button>
+        </div>
     )
 }
 
-export default Counter
+//В этой функции мы должны указать те свойства которые хотим вытащить из стейта, а нашем случае это счетчик(counter). Когда запустится connect то объект который возвращается из этой функции превратится в props для данного компонента Counter
+const mapStateToProps = (state) => {
+    return {
+        counter: state.value
+    }
+}
+
+// const mapDispatchToProps = (dispatch) => {
+//     return bindActionCreators(actions, dispatch)
+     
+// }
+
+export default connect(mapStateToProps, actions)(Counter)

@@ -1,27 +1,28 @@
-const initialState = {counter: 0};
+const initialState = {value: 0}
 
-//Эта функция похожа на useState - вначале принимает в себя состояние state, а затем принимает в себя action действие для изменения этого стейта
-//С помощью spread оператора создаем новый объект в reducer сохраняя при этом принцип иммутабельности
+//Первый аргумент state - предыдущее значение стейта, action - то что приходит извне store из view. Тут же задаем изначальное состояние state
+//reducer должна быть чистой функцией и соблюдать принцип иммутабельности
+//Так как изначальный стейт это объект, чтобы соблюсти принцип иммутабельности необходимо создать копию объекта через spread оператор(...) и потом прописать какое свойство этого объекта и как оно меняется
 const reducer = (state = initialState, action) => {
-    switch (action.type) {
-        case "INC":
-            return {
-              ...state,
-              counter: state.counter + 1
-            };
-        case "DEC":
+  switch (action.type) {
+      case "INC":
           return {
             ...state,
-            counter: state.counter - 1
+            value: state.value + 1
           };
-        case "RND":
+      case "DEC":
           return {
             ...state,
-            counter: state.counter * action.payload
+            value: state.value - 1
           };
-        default:
-            return state;
-    }
+      case "RND":
+          return {
+            ...state,
+            value: state.value * action.payload
+          };
+      default:
+          return state;
+  }
 }
 
-export default reducer
+  export default reducer
