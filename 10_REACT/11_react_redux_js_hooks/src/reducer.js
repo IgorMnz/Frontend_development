@@ -1,4 +1,4 @@
-const initialState = {value: 0}
+const initialState = {counter: 0}
 
 //Первый аргумент state - предыдущее значение стейта, action - то что приходит извне store из view. Тут же задаем изначальное состояние state
 //reducer должна быть чистой функцией и соблюдать принцип иммутабельности
@@ -8,17 +8,17 @@ const reducer = (state = initialState, action) => {
       case "INC":
           return {
             ...state,
-            value: state.value + 1
+            counter: state.counter + 1
           };
       case "DEC":
           return {
             ...state,
-            value: state.value - 1
+            counter: state.counter - 1
           };
       case "RND":
           return {
             ...state,
-            value: state.value * action.payload
+            counter: state.counter * action.payload
           };
       default:
           return state;
