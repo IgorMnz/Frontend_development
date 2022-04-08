@@ -1,13 +1,13 @@
-import { useHttp } from '../../hooks/http.hook';
-import { useEffect, useCallback } from 'react';
+import {useHttp} from '../../hooks/http.hook';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 
-import { heroesFetching, heroesFetched, heroesFetchingError, heroDeleted } from '../../actions';
+import { heroesFetching, heroesFetched, heroesFetchingError } from '../../actions';
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
 
 // Задача для этого компонента:
-// При клике на "крест" идет удаление персонажа из общего состояния
+// При клике на "крестик" идет удаление персонажа из общего состояния
 // Усложненная задача:
 // Удаление идет и с json файла при помощи метода DELETE
 
@@ -25,18 +25,6 @@ const HeroesList = () => {
         // eslint-disable-next-line
     }, []);
 
-    // Функция берет id и по нему удаляет ненужного персонажа из store
-    // ТОЛЬКО если запрос на удаление прошел успешно
-    // Отслеживайте цепочку действий actions => reducers
-    //id нам приходит из пропсов из HeroesListItem при нажатии на крест определенного элемента
-    const onDelete = useCallback((id) => {
-        // Удаление персонажа по его id
-        request(`http://localhost:3001/heroes/${id}`, "DELETE")
-            .then(data => console.log(data, 'Deleted'))
-            .then(dispatch(heroDeleted(id)))
-            .catch(err => console.log(err));
-    }, [request])
-
     if (heroesLoadingStatus === "loading") {
         return <Spinner/>;
     } else if (heroesLoadingStatus === "error") {
@@ -49,7 +37,7 @@ const HeroesList = () => {
         }
 
         return arr.map(({id, ...props}) => {
-            return <HeroesListItem key={id} onDelete={() => onDelete(id)} {...props}/>
+            return <HeroesListItem key={id} {...props}/>
         })
     }
 
