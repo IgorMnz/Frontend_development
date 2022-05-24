@@ -94,7 +94,7 @@ const HeroesAddForm = () => {
                     placeholder="Как меня зовут?"
                     value={heroName}
                     onChange={(e) => setHeroName(e.target.value)}/>
-            </div>filterList
+            </div>
 
             <div className="mb-3">
                 <label htmlFor="text" className="form-label fs-4">Описание</label>
