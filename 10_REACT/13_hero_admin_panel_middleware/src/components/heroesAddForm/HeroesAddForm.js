@@ -1,11 +1,12 @@
 
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { filtersFetching, filtersFetched, filtersFetchingError } from '../../actions';
+import { filtersFetching, filtersFetched, filtersFetchingError } from '../heroesFilters/filtersSlice';
 import { useHttp } from '../../hooks/http.hook';
 import { v4 as uuidv4 } from 'uuid';
 
-import { heroCreated } from '../../actions';
+// import { heroCreated } from '../../actions';
+import { heroCreated } from '../heroesList/heroesSlice';
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -94,7 +95,7 @@ const HeroesAddForm = () => {
                     placeholder="Как меня зовут?"
                     value={heroName}
                     onChange={(e) => setHeroName(e.target.value)}/>
-            </div>filterList
+            </div>
 
             <div className="mb-3">
                 <label htmlFor="text" className="form-label fs-4">Описание</label>
