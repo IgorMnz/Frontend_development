@@ -17,15 +17,6 @@ import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 const HeroesList = () => {
 
-    // //В данном условии производим фильтр и берем данный из стейтов из разных reducer'oв
-    // const filteredHeroes = useSelector(state => {
-    //     if (state.filters.activeFilter === 'all') {
-    //         return state.heroes.heroes;
-    //     } else {
-    //         return state.heroes.heroes.filter(item => item.element === state.filters.activeFilter)
-    //     }
-    // })
-
     const filteredHeroes = useSelector(filteredHeroesSelector)
     const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
