@@ -1,14 +1,11 @@
-import {useHttp} from '../../hooks/http.hook';
-import {useEffect} from 'react';
-import {useDispatch, useSelector} from 'react-redux';
+import {useCallback, useMemo} from 'react';
+import {useSelector} from 'react-redux';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
-// import {fetchHeroes} from '../../actions';
-import {fetchHeroes, heroDeleted, filteredHeroesSelector} from './heroesSlice'
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
-import {useCallback} from 'react';
-import {CSSTransition, TransitionGroup} from 'react-transition-group';
-// import {createSelector} from '@reduxjs/toolkit';
+
+import {useGetHeroesQuery, useDeleteHeroMutation} from "../../api/apiSlice";
 
 // Задача для этого компонента:
 // При клике на "крестик" идет удаление персонажа из общего состояния
@@ -17,31 +14,37 @@ import {CSSTransition, TransitionGroup} from 'react-transition-group';
 
 const HeroesList = () => {
 
-    const filteredHeroes = useSelector(filteredHeroesSelector)
-    const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
-    const dispatch = useDispatch();
-    const {request} = useHttp();
+    const {
+        data: heroes = [],
+        isLoading,
+        isError,
+    } = useGetHeroesQuery()
 
-    useEffect(() => {
-        dispatch(fetchHeroes())
-        // eslint-disable-next-line
-    }, []);
+    const [deleteHero] = useDeleteHeroMutation()
+
+    const activeFilter = useSelector(state => state.filters.activeFilter)
+
+    const filteredHeroes = useMemo(() => {
+        const filteredHeroes = heroes.slice()
+
+        if (activeFilter === 'all') {
+            return filteredHeroes;
+        } else {
+            return filteredHeroes.filter(item => item.element === activeFilter)
+        }
+    }, [heroes, activeFilter])
 
     // Функция берет id и по нему удаляет ненужного персонажа из store
     // ТОЛЬКО если запрос на удаление прошел успешно, то есть первый then прописываем с сообщением об успешном действии
     // Отслеживайте цепочку действий actions => reducers
     const onDelete = useCallback((id) => {
         // Удаление персонажа по его id
-        request(`http://localhost:3001/heroes/${id}`, "DELETE")
-            .then(data => console.log(data, 'Deleted'))
-            .then(dispatch(heroDeleted(id)))
-            .catch(err => console.log(err));
-        // eslint-disable-next-line  
-    }, [request]);
+        deleteHero(id)
+    }, []);
 
-    if (heroesLoadingStatus === "loading") {
+    if (isLoading) {
         return <Spinner/>;
-    } else if (heroesLoadingStatus === "error") {
+    } else if (isError) {
         return <h5 className="text-center mt-5">Ошибка загрузки</h5>
     }
 

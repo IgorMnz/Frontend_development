@@ -1,13 +1,11 @@
 import {useState, useEffect} from 'react';
 import {useSelector, useDispatch} from 'react-redux';
-// import {filtersFetching, filtersFetched, filtersFetchingError} from '../heroesFilters/filtersSlice';
-import {useHttp} from '../../hooks/http.hook';
 import {v4 as uuidv4} from 'uuid';
 
-// import { heroCreated } from '../../actions';
-import {heroCreated} from '../heroesList/heroesSlice';
-import {selectAll} from "../heroesFilters/filtersSlice";
 import store from "../../store";
+import {useHttp} from '../../hooks/http.hook';
+import {selectAll} from "../heroesFilters/filtersSlice";
+import {useCreateHeroMutation} from "../../api/apiSlice";
 
 // Задача для этого компонента:
 // Реализовать создание нового героя с введенными данными. Он должен попадать
@@ -25,10 +23,10 @@ const HeroesAddForm = () => {
     const [heroDescr, setHeroDescr] = useState('');
     const [heroElement, setHeroElement] = useState('');
 
+    const [createHero, {isLoading}] = useCreateHeroMutation()
+
     const {filtersLoadingStatus} = useSelector(state => state.filters);
     const filters = selectAll(store.getState())
-    const dispatch = useDispatch();
-    const {request} = useHttp();
 
     const onSubmitHandler = (e) => {
         e.preventDefault();
@@ -43,11 +41,7 @@ const HeroesAddForm = () => {
         // ТОЛЬКО если запрос успешен - отправляем персонажа в store, то есть первый then прописываем с сообщением об успешном действии
 
         if (newHero.element !== "") {
-
-            request("http://localhost:3001/heroes", "POST", JSON.stringify(newHero))
-                .then(res => console.log(res, 'Отправка успешна'))
-                .then(dispatch(heroCreated(newHero)))
-                .catch(err => console.log(err));
+            createHero(newHero).unwrap()
         }
 
         // Очищаем форму после отправки
@@ -114,10 +108,6 @@ const HeroesAddForm = () => {
                     onChange={(e) => setHeroElement(e.target.value)}>
                     <option>Я владею элементом...</option>
                     {renderFilters(filters, filtersLoadingStatus)}
-                    {/* <option value="fire">Огонь</option>
-                    <option value="water">Вода</option>
-                    <option value="wind">Ветер</option>
-                    <option value="earth">Земля</option> */}
                 </select>
             </div>
 
