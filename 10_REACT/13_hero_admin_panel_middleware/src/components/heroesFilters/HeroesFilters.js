@@ -1,9 +1,9 @@
-
-import { useEffect } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { useHttp } from '../../hooks/http.hook';
-import { fetchFilters } from '../../actions/index';
-import { activeFilterChanged } from './filtersSlice';
+import {useEffect} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+// import {useHttp} from '../../hooks/http.hook';
+// import {fetchFilters} from '../../actions/index';
+import {fetchFilters, activeFilterChanged, selectAll} from './filtersSlice';
+import store from "../../store";
 
 import classNames from 'classnames';
 import Spinner from '../spinner/Spinner';
@@ -16,12 +16,13 @@ import Spinner from '../spinner/Spinner';
 
 const HeroesFilters = () => {
 
-    const {filters, filtersLoadingStatus, activeFilter} = useSelector(state => state.filters);
+    const {filtersLoadingStatus, activeFilter} = useSelector(state => state.filters);
+    const filters = selectAll(store.getState())
     const dispatch = useDispatch();
-    const {request} = useHttp();
+    // const {request} = useHttp();
 
     useEffect(() => {
-        dispatch(fetchFilters(request))
+        dispatch(fetchFilters())
         // eslint-disable-next-line
     }, []);
 
@@ -40,32 +41,30 @@ const HeroesFilters = () => {
                 'active': name === activeFilter
             });
 
-            return <button 
-                        key={name} 
-                        id={name} 
-                        className={btnClass}
-                        onClick={() => dispatch(activeFilterChanged(name))}
-                        >{label}</button>
+            return <button
+                key={name}
+                id={name}
+                className={btnClass}
+                onClick={() => dispatch(activeFilterChanged(name))}
+            >{label}</button>
         })
     }
 
     const elements = filterList(filters);
 
-    return (
-        <div className="card shadow-lg mt-4">
-            <div className="card-body">
-                <p className="card-text">Отфильтруйте героев по элементам</p>
-                <div className="btn-group">
-                    {elements}
-                    {/* <button className="btn btn-outline-dark active">Все</button>
+    return (<div className="card shadow-lg mt-4">
+        <div className="card-body">
+            <p className="card-text">Отфильтруйте героев по элементам</p>
+            <div className="btn-group">
+                {elements}
+                {/* <button className="btn btn-outline-dark active">Все</button>
                     <button className="btn btn-danger">Огонь</button>
                     <button className="btn btn-primary">Вода</button>
                     <button className="btn btn-success">Ветер</button>
                     <button className="btn btn-secondary">Земля</button> */}
-                </div>
             </div>
         </div>
-    )
+    </div>)
 }
 
 export default HeroesFilters;

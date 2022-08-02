@@ -1,14 +1,14 @@
-import { useHttp } from '../../hooks/http.hook';
-import { useEffect } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
+import {useHttp} from '../../hooks/http.hook';
+import {useEffect} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 
-import { fetchHeroes} from '../../actions';
-import { heroDeleted } from './heroesSlice'
+// import {fetchHeroes} from '../../actions';
+import {fetchHeroes, heroDeleted, filteredHeroesSelector} from './heroesSlice'
 import HeroesListItem from "../heroesListItem/HeroesListItem";
 import Spinner from '../spinner/Spinner';
-import { useCallback } from 'react';
-import { CSSTransition, TransitionGroup} from 'react-transition-group';
-import { createSelector } from 'reselect';
+import {useCallback} from 'react';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
+// import {createSelector} from '@reduxjs/toolkit';
 
 // Задача для этого компонента:
 // При клике на "крестик" идет удаление персонажа из общего состояния
@@ -16,21 +16,6 @@ import { createSelector } from 'reselect';
 // Удаление идет и с json файла при помощи метода DELETE
 
 const HeroesList = () => {
-
-    //тут получаем в конечном итоге функцию selector (функция которая получает кусочек нашего стейта) с помощью функции createSelector из библиотеки reselect, в ней прописываем кусочки значений из наших разных стейтов и в конце пишем необходимую нам функцию где используем эти значения из стейтов
-    const filteredHeroesSelector = createSelector(
-        (state) => state.filters.activeFilter,
-        (state) => state.heroes.heroes,
-        (filter, heroes) => {
-            if (filter === 'all') {
-                return heroes;
-            } else {
-                return heroes.filter(item => item.element === filter)
-            }
-        }
-    );
-
-    const filteredHeroes = useSelector(filteredHeroesSelector)
 
     // //В данном условии производим фильтр и берем данный из стейтов из разных reducer'oв
     // const filteredHeroes = useSelector(state => {
@@ -41,13 +26,13 @@ const HeroesList = () => {
     //     }
     // })
 
+    const filteredHeroes = useSelector(filteredHeroesSelector)
     const heroesLoadingStatus = useSelector(state => state.heroes.heroesLoadingStatus);
     const dispatch = useDispatch();
     const {request} = useHttp();
 
     useEffect(() => {
-        dispatch(fetchHeroes(request))
-
+        dispatch(fetchHeroes())
         // eslint-disable-next-line
     }, []);
 
@@ -82,7 +67,7 @@ const HeroesList = () => {
 
         return arr.map(({id, ...props}) => {
             return (
-                <CSSTransition 
+                <CSSTransition
                     key={id}
                     timeout={500}
                     classNames="hero">

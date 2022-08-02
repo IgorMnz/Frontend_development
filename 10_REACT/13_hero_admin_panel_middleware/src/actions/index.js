@@ -1,21 +1,20 @@
 // import { createAction } from "@reduxjs/toolkit";
-import {heroesFetching, heroesFetched, heroesFetchingError} from '../components/heroesList/heroesSlice'
-import {filtersFetching, filtersFetched, filtersFetchingError} from '../components/heroesFilters/filtersSlice'
+// import {heroesFetching, heroesFetched, heroesFetchingError} from '../components/heroesList/heroesSlice'
+// import {filtersFetching, filtersFetched, filtersFetchingError} from '../components/heroesFilters/filtersSlice'
 
-export const fetchHeroes = (request) => (dispatch) => {
-    dispatch(heroesFetching());
-    request("http://localhost:3001/heroes")
-        .then(data => dispatch(heroesFetched(data)))
-        .catch(() => dispatch(heroesFetchingError()))
-}
+// export const fetchHeroes = (request) => (dispatch) => {
+//     dispatch(heroesFetching());
+//     request("http://localhost:3001/heroes")
+//         .then(data => dispatch(heroesFetched(data)))
+//         .catch(() => dispatch(heroesFetchingError()))
+// }
 
-export const fetchFilters = (request) => (dispatch) => {
-    dispatch(filtersFetching());
-    request("http://localhost:3001/filters")
-        .then(data => dispatch(filtersFetched(data)))
-        .catch(() => dispatch(filtersFetchingError()))
-}
-
+// export const fetchFilters = (request) => (dispatch) => {
+//     dispatch(filtersFetching());
+//     request("http://localhost:3001/filters")
+//         .then(data => dispatch(filtersFetched(data)))
+//         .catch(() => dispatch(filtersFetchingError()))
+// }
 
 //Переписываем через ф-ю createAction. В ней автоматически подтягивается payload если какие то данные приходят, например с heroesFetched(data)
 // export const heroesFetching = createAction('HEROES_FETCHING');
@@ -27,7 +26,6 @@ export const fetchFilters = (request) => (dispatch) => {
 // export const heroCreated = createAction('HERO_CREATED')
 
 // export const heroDeleted = createAction('HERO_DELETED')
-
 
 
 // export const heroesFetching = () => {
