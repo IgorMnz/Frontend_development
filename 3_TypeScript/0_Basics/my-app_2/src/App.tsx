@@ -219,6 +219,118 @@ importantDates.push(new Date())
 //=================================
 
 
+//TYPESCRIPT TUPLES:
+//=================================
+const drink = {
+    color: "brown",
+    carbonated: true,
+    sugar: 40
+}
+
+type Drink = [string, boolean, number]
+
+const cola: Drink = ['brown', true, 40]
+const coffee: Drink = ['black', false, 0]
+
+const carSpecs: [number, number] = [400, 3354]
+
+const carSpecsObj = {
+    horsepower: 400,
+    weight: 3354
+}
+//=================================
+
+
+//TYPESCRIPT INTERFACES:
+//=================================
+interface Reportable {
+    summary(): string
+}
+
+const oldCivic = {
+    name: 'civic',
+    year: 2000,
+    broken: true,
+    summary(): string {
+        return `Name: ${this.name}`
+    }
+}
+
+const colaDrink = {
+    color: "brown",
+    carbonated: true,
+    sugar: 40,
+    summary(): string {
+        return `Cola has ${this.sugar} grams of sugar`
+    }
+}
+
+const printSummary = (item: Reportable): void => {
+    // console.log(`Name: ${vehicle.name}`)
+    // console.log(`Year: ${vehicle.year}`)
+    // console.log(`Broken: ${vehicle.broken}`)
+    console.log(item.summary())
+}
+
+printSummary(oldCivic)
+printSummary(colaDrink)
+
+//=================================
+
+
+//TYPESCRIPT CLASSES:
+//=================================
+class Vehicle_1 {
+    // public drive(): void {
+    //     console.log(`I'm driving!`)
+    // }
+
+    // color: string = 'red';
+    //
+    // constructor(color: string) {
+    //     this.color = color
+    // }
+
+    //Сокращение записи выше:
+    constructor(public color: string) {
+    }
+
+    public stop(): void {
+        console.log(`I'm stopped!`)
+    }
+
+    protected beep(): void {
+        console.log('Beeeeeep!')
+    }
+}
+
+class Car_1 extends Vehicle_1 {
+
+    constructor(public wheels: number, color: string) {
+        super(color)
+    }
+
+    private drive(): void {
+        console.log(`I'm a car and I'm driving!`)
+    }
+
+    startDrivingProcess(): void {
+        this.drive()
+        this.beep()
+    }
+}
+
+const vehicle_1 = new Vehicle_1('black')
+console.log(vehicle_1.color)
+// vehicle_1.drive()
+// vehicle_1.stop()
+
+const car_1 = new Car_1(4, 'silver')
+// car_1.startDrivingProcess()
+// car_1.stop()
+//=================================
+
+
 //=================================
 function App() {
     return (
