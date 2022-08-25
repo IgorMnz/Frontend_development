@@ -331,7 +331,139 @@ const car_1 = new Car_1(4, 'silver')
 //=================================
 
 
+//TYPESCRIPT GENERICS:
 //=================================
+class ArrayOfNumbers {
+    constructor(public collection: number[]) {
+    }
+
+    get(index: number): number {
+        return this.collection[index]
+    }
+}
+
+class ArrayOfStrings {
+    constructor(public collection: string[]) {
+    }
+
+    get(index: number): string {
+        return this.collection[index]
+    }
+}
+
+class ArrayOfAnything<T> {
+    constructor(public collection: T[]) {
+    }
+
+    get(index: number): T {
+        return this.collection[index]
+    }
+}
+
+new ArrayOfAnything<number>([1, 2, 3])
+
+//Example of generics with functions
+
+function printStrings(arr: string[]): void {
+    for (let i = 0; i < arr.length; i++) {
+        console.log(arr[i])
+    }
+}
+
+function printNumbers(arr: number[]): void {
+    for (let i = 0; i < arr.length; i++) {
+        console.log(arr[i])
+    }
+}
+
+function printAnything<T>(arr: T[]): void {
+    for (let i = 0; i < arr.length; i++) {
+        console.log(arr[i])
+    }
+}
+
+printAnything<number>([1, 2, 3])
+
+//Generics Constraints
+
+class Human {
+    print() {
+        console.log('I am a human')
+    }
+}
+
+class Robot {
+    print() {
+        console.log('I am a robot')
+    }
+}
+
+interface Printable {
+    print(): void
+}
+
+function printAnything1<T extends Printable>(arr: T[]): void {
+    for (let i = 0; i < arr.length; i++) {
+        arr[i].print()
+    }
+}
+
+printAnything1([new Human(), new Robot()])
+
+//=================================
+
+
+//TYPESCRIPT DECORATORS:
+//=================================
+@classDecorator
+class DecoratedCar {
+    @testDecorator
+    color: string = 'white'
+
+    @testDecorator
+    get formattedColor(): string {
+        return `This car color is ${this.color}`
+    }
+
+    @logError('Darn! The car is crashed!')
+    drive(@parameterDecorator speed: string, @parameterDecorator isStop: boolean): void {
+        if (speed == 'fast') {
+            console.log('Vrooom!')
+        } else {
+            console.log('I am driving')
+        }
+    }
+}
+
+function classDecorator(consructor: typeof DecoratedCar) {
+    console.log(consructor)
+}
+
+function parameterDecorator(target: any, key: string, index: number) {
+    console.log(key, index)
+}
+
+function testDecorator(target: any, key: string) {
+    console.log(key)
+}
+
+function logError(errorMessage: string) {
+    return function (target: any, key: string, desc: PropertyDescriptor): void {
+        const method = desc.value
+
+        desc.value = function () {
+            try {
+                method()
+            } catch (e) {
+                console.log(errorMessage)
+            }
+        }
+    }
+}
+
+//=================================
+
+
 function App() {
     return (
         <>
